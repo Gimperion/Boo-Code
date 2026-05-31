@@ -50,6 +50,7 @@ import {
 import { initializeI18n } from "./i18n"
 import { initializeModelCacheRefresh } from "./api/providers/fetchers/modelCache"
 import { initZooCodeAuth } from "./services/zoo-code-auth"
+import { detectWorkspace } from "./services/boo-workspace"
 
 /**
  * Built using https://github.com/microsoft/vscode-webview-ui-toolkit
@@ -355,6 +356,31 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Initialize background model cache refresh
 	initializeModelCacheRefresh()
+
+	// Detect and surface Boo Code workspace state.
+	const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? null
+	const workspaceState = await detectWorkspace(workspaceRoot)
+
+	if (workspaceState === "non-workspace") {
+		const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0)
+		statusBarItem.text = "$(file-add) Initialize Boo Code Workspace"
+		statusBarItem.command = `${Package.name}.workspaceInit`
+		statusBarItem.tooltip = "This folder is not a Boo Code workspace. Click to initialize."
+		statusBarItem.show()
+		context.subscriptions.push(statusBarItem)
+
+		context.subscriptions.push(
+			vscode.workspace.onDidChangeWorkspaceFolders(async () => {
+				const newRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? null
+				const newState = await detectWorkspace(newRoot)
+				if (newState === "boo-workspace") {
+					statusBarItem.hide()
+				}
+			}),
+		)
+	}
+
+	outputChannel.appendLine(`[BooWorkspace] Workspace state: ${workspaceState}`)
 
 	return new API(outputChannel, provider, socketPath, enableLogging)
 }

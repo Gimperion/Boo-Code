@@ -14,6 +14,7 @@ import { CodeIndexManager } from "../services/code-index/manager"
 import { importSettingsWithFeedback } from "../core/config/importExport"
 import { MdmService } from "../services/mdm/MdmService"
 import { t } from "../i18n"
+import { initWorkspace, detectWorkspace } from "../services/boo-workspace"
 
 /**
  * Helper to get the visible ClineProvider instance or log if not found.
@@ -198,6 +199,30 @@ const getCommandsMap = ({ context, outputChannel, provider }: RegisterCommandOpt
 			})
 		} catch (error) {
 			outputChannel.appendLine(`[toggleAutoApprove] postMessageToWebview failed: ${error}`)
+		}
+	},
+
+	workspaceInit: async () => {
+		const workspaceFolders = vscode.workspace.workspaceFolders
+		if (!workspaceFolders || workspaceFolders.length === 0) {
+			vscode.window.showErrorMessage("Open a folder first to initialize a Boo Code workspace.")
+			return
+		}
+		const root = workspaceFolders[0].uri.fsPath
+
+		// Placeholder — will be wired to the real AI provider once writing modes are implemented.
+		const generateDescription = async (_folderName: string): Promise<string> => {
+			throw new Error("AI provider not yet wired")
+		}
+
+		try {
+			await initWorkspace(root, generateDescription)
+			vscode.window.showInformationMessage("Boo Code workspace initialized.")
+			await vscode.commands.executeCommand("vscode.open", vscode.Uri.file(root + "/.boo/style.md"))
+		} catch (error) {
+			vscode.window.showErrorMessage(
+				`Failed to initialize workspace: ${error instanceof Error ? error.message : String(error)}`,
+			)
 		}
 	},
 })

@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## 3.57.1
+
+### Added
+
+- Workspace management: detect, initialize, and manage Boo Code writing workspaces (`workspace.boo.md`, `.boo/`, `knowledge/`, `components/`)
+- `boo.workspace.init` command scaffolds a new workspace; status bar prompt appears in non-workspace folders
+- Pillar path overrides via `workspace.boo.md` frontmatter (`meta`, `knowledge`, `components`)
+- Component discovery by scanning `components/` for `component.boo.md` manifests
+
+---
+
 ## 3.57.0
 
 ### Changes
