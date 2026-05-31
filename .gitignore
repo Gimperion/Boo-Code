@@ -59,3 +59,4 @@ roo-cli-*.tar.gz*
 # Boo additions
 planning/
 .reference/
+docs/
