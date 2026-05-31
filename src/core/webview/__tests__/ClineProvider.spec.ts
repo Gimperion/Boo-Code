@@ -186,7 +186,7 @@ vi.mock("../../../api", () => ({
 
 vi.mock("../../prompts/system", () => ({
 	SYSTEM_PROMPT: vi.fn().mockImplementation(async () => "mocked system prompt"),
-	codeMode: "code",
+	codeMode: "draft",
 }))
 
 vi.mock("../../../integrations/workspace/WorkspaceTracker", () => {
@@ -233,26 +233,26 @@ vi.mock("../../../api/providers/fetchers/modelCache", () => ({
 vi.mock("../../../shared/modes", () => ({
 	modes: [
 		{
-			slug: "code",
+			slug: "draft",
 			name: "Code Mode",
 			roleDefinition: "You are a code assistant",
 			groups: ["read", "edit"],
 		},
 		{
-			slug: "architect",
+			slug: "outline",
 			name: "Architect Mode",
 			roleDefinition: "You are an architect",
 			groups: ["read", "edit"],
 		},
 		{
-			slug: "ask",
+			slug: "interview",
 			name: "Ask Mode",
 			roleDefinition: "You are a helpful assistant",
 			groups: ["read"],
 		},
 	],
 	getModeBySlug: vi.fn().mockReturnValue({
-		slug: "code",
+		slug: "draft",
 		name: "Code Mode",
 		roleDefinition: "You are a code assistant",
 		groups: ["read", "edit"],
@@ -270,12 +270,12 @@ vi.mock("../../../shared/modes", () => ({
 				return "General Tools"
 		}
 	}),
-	defaultModeSlug: "code",
+	defaultModeSlug: "draft",
 }))
 
 vi.mock("../../prompts/system", () => ({
 	SYSTEM_PROMPT: vi.fn().mockResolvedValue("mocked system prompt"),
-	codeMode: "code",
+	codeMode: "draft",
 }))
 
 vi.mock("../../../api", () => ({
@@ -369,7 +369,7 @@ describe("ClineProvider", () => {
 		}
 
 		const globalState: Record<string, string | undefined> = {
-			mode: "architect",
+			mode: "outline",
 			currentApiConfigName: "current-config",
 		}
 
@@ -922,10 +922,10 @@ describe("ClineProvider", () => {
 		} as any
 
 		// Switch to architect mode
-		await messageHandler({ type: "mode", text: "architect" })
+		await messageHandler({ type: "mode", text: "outline" })
 
 		// Should load the saved config for architect mode
-		expect(provider.providerSettingsManager.getModeConfigId).toHaveBeenCalledWith("architect")
+		expect(provider.providerSettingsManager.getModeConfigId).toHaveBeenCalledWith("outline")
 		expect(provider.providerSettingsManager.activateProfile).toHaveBeenCalledWith({ name: "test-config" })
 		expect(mockContext.globalState.update).toHaveBeenCalledWith("currentApiConfigName", "test-config")
 	})
@@ -945,10 +945,10 @@ describe("ClineProvider", () => {
 		provider.setValue("currentApiConfigName", "current-config")
 
 		// Switch to architect mode
-		await messageHandler({ type: "mode", text: "architect" })
+		await messageHandler({ type: "mode", text: "outline" })
 
 		// Should save current config as default for architect mode
-		expect(provider.providerSettingsManager.setModeConfig).toHaveBeenCalledWith("architect", "current-id")
+		expect(provider.providerSettingsManager.setModeConfig).toHaveBeenCalledWith("outline", "current-id")
 	})
 
 	it("saves config as default for current mode when loading config", async () => {
@@ -965,13 +965,13 @@ describe("ClineProvider", () => {
 		} as any
 
 		// First set the mode
-		await messageHandler({ type: "mode", text: "architect" })
+		await messageHandler({ type: "mode", text: "outline" })
 
 		// Then load the config
 		await messageHandler({ type: "loadApiConfiguration", text: "new-config" })
 
 		// Should save new config as default for architect mode
-		expect(provider.providerSettingsManager.setModeConfig).toHaveBeenCalledWith("architect", "new-id")
+		expect(provider.providerSettingsManager.setModeConfig).toHaveBeenCalledWith("outline", "new-id")
 	})
 
 	it("load API configuration by ID works and updates mode config", async () => {
@@ -992,13 +992,13 @@ describe("ClineProvider", () => {
 		} as any
 
 		// First set the mode
-		await messageHandler({ type: "mode", text: "architect" })
+		await messageHandler({ type: "mode", text: "outline" })
 
 		// Then load the config by ID
 		await messageHandler({ type: "loadApiConfigurationById", text: "config-id-123" })
 
 		// Should save new config as default for architect mode
-		expect(provider.providerSettingsManager.setModeConfig).toHaveBeenCalledWith("architect", "config-id-123")
+		expect(provider.providerSettingsManager.setModeConfig).toHaveBeenCalledWith("outline", "config-id-123")
 
 		// Ensure the `activateProfile` method was called with the correct ID
 		expect(provider.providerSettingsManager.activateProfile).toHaveBeenCalledWith({ id: "config-id-123" })
@@ -1045,7 +1045,7 @@ describe("ClineProvider", () => {
 		// Test updating a prompt
 		await messageHandler({
 			type: "updatePrompt",
-			promptMode: "code",
+			promptMode: "draft",
 			customPrompt: "new code prompt",
 		})
 
@@ -1114,7 +1114,7 @@ describe("ClineProvider", () => {
 		// Update custom instructions for code mode
 		await messageHandler({
 			type: "updatePrompt",
-			promptMode: "code",
+			promptMode: "draft",
 			customPrompt: {
 				roleDefinition: "Code role",
 				customInstructions: "New instructions",
@@ -1138,7 +1138,7 @@ describe("ClineProvider", () => {
 				...mockContext.globalState,
 				get: vi.fn((key: string) => {
 					if (key === "mode") {
-						return "code"
+						return "draft"
 					} else if (key === "currentApiConfigName") {
 						return "test-config"
 					}
@@ -1168,7 +1168,7 @@ describe("ClineProvider", () => {
 		})
 
 		// Should save config as default for current mode
-		expect(provider.providerSettingsManager.setModeConfig).toHaveBeenCalledWith("code", "test-id")
+		expect(provider.providerSettingsManager.setModeConfig).toHaveBeenCalledWith("draft", "test-id")
 	})
 
 	test("file content includes line numbers", async () => {
@@ -1376,18 +1376,18 @@ describe("ClineProvider", () => {
 					apiProvider: "openrouter" as const,
 				},
 				mcpEnabled: true,
-				mode: "code" as const,
+				mode: "draft" as const,
 				experiments: experimentDefault,
 			} as any)
 
-			await handler({ type: "getSystemPrompt", mode: "code" })
+			await handler({ type: "getSystemPrompt", mode: "draft" })
 
 			// Verify system prompt was generated and sent
 			expect(mockPostMessage).toHaveBeenCalledWith(
 				expect.objectContaining({
 					type: "systemPrompt",
 					text: expect.any(String),
-					mode: "code",
+					mode: "draft",
 				}),
 			)
 
@@ -1400,18 +1400,18 @@ describe("ClineProvider", () => {
 					apiProvider: "openrouter" as const,
 				},
 				mcpEnabled: false,
-				mode: "code" as const,
+				mode: "draft" as const,
 				experiments: experimentDefault,
 			} as any)
 
-			await handler({ type: "getSystemPrompt", mode: "code" })
+			await handler({ type: "getSystemPrompt", mode: "draft" })
 
 			// Verify system prompt was generated and sent
 			expect(mockPostMessage).toHaveBeenCalledWith(
 				expect.objectContaining({
 					type: "systemPrompt",
 					text: expect.any(String),
-					mode: "code",
+					mode: "draft",
 				}),
 			)
 		})
@@ -1422,7 +1422,7 @@ describe("ClineProvider", () => {
 			vi.mocked(SYSTEM_PROMPT).mockRejectedValueOnce(new Error("Test error"))
 
 			const messageHandler = (mockWebviewView.webview.onDidReceiveMessage as any).mock.calls[0][0]
-			await messageHandler({ type: "getSystemPrompt", mode: "code" })
+			await messageHandler({ type: "getSystemPrompt", mode: "draft" })
 
 			expect(vscode.window.showErrorMessage).toHaveBeenCalledWith("errors.get_system_prompt")
 		})
@@ -1438,20 +1438,20 @@ describe("ClineProvider", () => {
 				customModePrompts: {
 					code: { customInstructions: "Code mode specific instructions" },
 				},
-				mode: "code" as const,
+				mode: "draft" as const,
 				experiments: experimentDefault,
 			} as any)
 
 			// Trigger getSystemPrompt
 			const handler = getMessageHandler()
-			await handler({ type: "getSystemPrompt", mode: "code" })
+			await handler({ type: "getSystemPrompt", mode: "draft" })
 
 			// Verify system prompt was generated and sent
 			expect(mockPostMessage).toHaveBeenCalledWith(
 				expect.objectContaining({
 					type: "systemPrompt",
 					text: expect.any(String),
-					mode: "code",
+					mode: "draft",
 				}),
 			)
 		})
@@ -1467,21 +1467,21 @@ describe("ClineProvider", () => {
 				customModePrompts: {
 					architect: { customInstructions: "Architect mode instructions" },
 				},
-				mode: "architect",
+				mode: "outline",
 				mcpEnabled: false,
 				experiments: experimentDefault,
 			} as any)
 
 			// Trigger getSystemPrompt for architect mode
 			const handler = getMessageHandler()
-			await handler({ type: "getSystemPrompt", mode: "architect" })
+			await handler({ type: "getSystemPrompt", mode: "outline" })
 
 			// Verify system prompt was generated and sent
 			expect(mockPostMessage).toHaveBeenCalledWith(
 				expect.objectContaining({
 					type: "systemPrompt",
 					text: expect.any(String),
-					mode: "architect",
+					mode: "outline",
 				}),
 			)
 		})
@@ -1509,13 +1509,13 @@ describe("ClineProvider", () => {
 			} as any
 
 			// Switch to architect mode
-			await provider.handleModeSwitch("architect")
+			await provider.handleModeSwitch("outline")
 
 			// Verify mode was updated
-			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "architect")
+			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "outline")
 
 			// Verify saved config was loaded
-			expect(provider.providerSettingsManager.getModeConfigId).toHaveBeenCalledWith("architect")
+			expect(provider.providerSettingsManager.getModeConfigId).toHaveBeenCalledWith("outline")
 			expect(provider.providerSettingsManager.activateProfile).toHaveBeenCalledWith({ name: "saved-config" })
 			expect(mockContext.globalState.update).toHaveBeenCalledWith("currentApiConfigName", "saved-config")
 
@@ -1541,13 +1541,13 @@ describe("ClineProvider", () => {
 			})
 
 			// Switch to architect mode
-			await provider.handleModeSwitch("architect")
+			await provider.handleModeSwitch("outline")
 
 			// Verify mode was updated
-			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "architect")
+			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "outline")
 
 			// Verify current config was saved as default for new mode
-			expect(provider.providerSettingsManager.setModeConfig).toHaveBeenCalledWith("architect", "current-id")
+			expect(provider.providerSettingsManager.setModeConfig).toHaveBeenCalledWith("outline", "current-id")
 
 			// Verify state was posted to webview
 			expect(mockPostMessage).toHaveBeenCalledWith(expect.objectContaining({ type: "state" }))
@@ -1577,7 +1577,7 @@ describe("ClineProvider", () => {
 			vi.mocked(getModeBySlug)
 				.mockReturnValueOnce(undefined) // First call returns undefined (mode doesn't exist)
 				.mockReturnValue({
-					slug: "code",
+					slug: "draft",
 					name: "Code Mode",
 					roleDefinition: "You are a code assistant",
 					groups: ["read", "edit"],
@@ -1612,13 +1612,13 @@ describe("ClineProvider", () => {
 			expect(getModeBySlug).toHaveBeenCalledWith("non-existent-mode", expect.any(Array))
 
 			// Verify fallback to default mode
-			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "code")
+			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "draft")
 			expect(logSpy).toHaveBeenCalledWith(
 				"Mode 'non-existent-mode' from history no longer exists. Falling back to default mode 'code'.",
 			)
 
 			// Verify history item was updated with default mode
-			expect(historyItem.mode).toBe("code")
+			expect(historyItem.mode).toBe("draft")
 		})
 
 		test("preserves mode when it exists in custom modes", async () => {
@@ -1701,7 +1701,7 @@ describe("ClineProvider", () => {
 			// Mock getModeBySlug to return built-in architect mode
 			const { getModeBySlug } = await import("../../../shared/modes")
 			vi.mocked(getModeBySlug).mockReturnValue({
-				slug: "architect",
+				slug: "outline",
 				name: "Architect Mode",
 				roleDefinition: "You are an architect",
 				groups: ["read", "edit"],
@@ -1718,7 +1718,7 @@ describe("ClineProvider", () => {
 				id: "test-id",
 				ts: Date.now(),
 				task: "Test task",
-				mode: "architect",
+				mode: "outline",
 				number: 1,
 				tokensIn: 0,
 				tokensOut: 0,
@@ -1729,10 +1729,10 @@ describe("ClineProvider", () => {
 			await provider.createTaskWithHistoryItem(historyItem)
 
 			// Verify mode was preserved
-			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "architect")
+			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "outline")
 
 			// Verify history item mode was not changed
-			expect(historyItem.mode).toBe("architect")
+			expect(historyItem.mode).toBe("outline")
 		})
 
 		test("handles history items without mode property", async () => {
@@ -1776,7 +1776,7 @@ describe("ClineProvider", () => {
 			// Mock getModeBySlug to return built-in mode
 			const { getModeBySlug } = await import("../../../shared/modes")
 			vi.mocked(getModeBySlug).mockReturnValue({
-				slug: "code",
+				slug: "draft",
 				name: "Code Mode",
 				roleDefinition: "You are a code assistant",
 				groups: ["read", "edit"],
@@ -1799,7 +1799,7 @@ describe("ClineProvider", () => {
 				id: "test-id",
 				ts: Date.now(),
 				task: "Test task",
-				mode: "code",
+				mode: "draft",
 				number: 1,
 				tokensIn: 0,
 				tokensOut: 0,
@@ -1892,7 +1892,7 @@ describe("ClineProvider", () => {
 
 			// Mock getState to provide necessary data
 			vi.spyOn(provider, "getState").mockResolvedValue({
-				mode: "code",
+				mode: "draft",
 				currentApiConfigName: "test-config",
 			} as any)
 
@@ -2203,7 +2203,7 @@ describe("getTelemetryProperties", () => {
 		mockContext = {
 			globalState: {
 				get: vi.fn().mockImplementation((key: string) => {
-					if (key === "mode") return "code"
+					if (key === "mode") return "draft"
 					if (key === "apiProvider") return "anthropic"
 					return undefined
 				}),
@@ -2672,7 +2672,7 @@ describe("ClineProvider - Comprehensive Edit/Delete Edge Cases", () => {
 		}
 
 		const globalState: Record<string, string | undefined> = {
-			mode: "code",
+			mode: "draft",
 			currentApiConfigName: "current-config",
 		}
 

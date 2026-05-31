@@ -18,7 +18,7 @@ const FOLLOW_UP_PARAMETER_DESCRIPTION = `Required list of 2-4 suggested response
 
 const FOLLOW_UP_TEXT_DESCRIPTION = `Suggested answer the user can pick`
 
-const FOLLOW_UP_MODE_DESCRIPTION = `Optional mode slug to switch to if this suggestion is chosen (e.g., code, architect)`
+const FOLLOW_UP_MODE_DESCRIPTION = `Optional mode slug to switch to if this suggestion is chosen (e.g., draft, outline)`
 
 export default {
 	type: "function",

@@ -78,7 +78,7 @@ describe("Nested delegation resume (A → B → C)", () => {
 				tokensIn: 0,
 				tokensOut: 0,
 				totalCost: 0,
-				mode: "code",
+				mode: "draft",
 				workspace: "/tmp",
 			},
 			B: {
@@ -93,7 +93,7 @@ describe("Nested delegation resume (A → B → C)", () => {
 				tokensIn: 0,
 				tokensOut: 0,
 				totalCost: 0,
-				mode: "code",
+				mode: "draft",
 				workspace: "/tmp",
 			},
 			C: {
@@ -105,7 +105,7 @@ describe("Nested delegation resume (A → B → C)", () => {
 				tokensIn: 0,
 				tokensOut: 0,
 				totalCost: 0,
-				mode: "code",
+				mode: "draft",
 				workspace: "/tmp",
 			},
 		}

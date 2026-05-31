@@ -118,30 +118,30 @@ vi.mock("@roo-code/cloud", () => ({
 vi.mock("../../../shared/modes", () => ({
 	modes: [
 		{
-			slug: "code",
+			slug: "draft",
 			name: "Code Mode",
 			roleDefinition: "You are a code assistant",
 			groups: ["read", "edit"],
 		},
 		{
-			slug: "architect",
+			slug: "outline",
 			name: "Architect Mode",
 			roleDefinition: "You are an architect",
 			groups: ["read", "edit"],
 		},
 	],
 	getModeBySlug: vi.fn().mockReturnValue({
-		slug: "code",
+		slug: "draft",
 		name: "Code Mode",
 		roleDefinition: "You are a code assistant",
 		groups: ["read", "edit"],
 	}),
-	defaultModeSlug: "code",
+	defaultModeSlug: "draft",
 }))
 
 vi.mock("../../prompts/system", () => ({
 	SYSTEM_PROMPT: vi.fn().mockResolvedValue("mocked system prompt"),
-	codeMode: "code",
+	codeMode: "draft",
 }))
 
 vi.mock("../../../api/providers/fetchers/modelCache", () => ({
@@ -209,7 +209,7 @@ describe("ClineProvider - Sticky Mode", () => {
 		}
 
 		const globalState: Record<string, string | undefined> = {
-			mode: "code",
+			mode: "draft",
 			currentApiConfigName: "test-config",
 		}
 
@@ -330,16 +330,16 @@ describe("ClineProvider - Sticky Mode", () => {
 			await provider.addClineToStack(mockTask)
 
 			// Switch mode
-			await provider.handleModeSwitch("architect")
+			await provider.handleModeSwitch("outline")
 
 			// Verify mode was updated in global state
-			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "architect")
+			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "outline")
 
 			// Verify task history was updated with new mode
 			expect(updateTaskHistorySpy).toHaveBeenCalledWith(
 				expect.objectContaining({
 					id: taskId,
-					mode: "architect",
+					mode: "outline",
 				}),
 			)
 		})
@@ -348,7 +348,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			// Create a mock task with initial mode
 			const mockTask = {
 				taskId: "test-task-id",
-				taskMode: "code", // Initial mode
+				taskMode: "draft", // Initial mode
 				emit: vi.fn(),
 				saveClineMessages: vi.fn(),
 				clineMessages: [],
@@ -378,13 +378,13 @@ describe("ClineProvider - Sticky Mode", () => {
 			vi.spyOn(provider, "updateTaskHistory").mockImplementation(() => Promise.resolve([]))
 
 			// Switch mode
-			await provider.handleModeSwitch("architect")
+			await provider.handleModeSwitch("outline")
 
 			// Verify task's _taskMode property was updated (using private property)
-			expect((mockTask as any)._taskMode).toBe("architect")
+			expect((mockTask as any)._taskMode).toBe("outline")
 
 			// Verify emit was called with taskModeSwitched event
-			expect(mockTask.emit).toHaveBeenCalledWith("taskModeSwitched", mockTask.taskId, "architect")
+			expect(mockTask.emit).toHaveBeenCalledWith("taskModeSwitched", mockTask.taskId, "outline")
 		})
 
 		it("should update task history with new mode when active task exists", async () => {
@@ -421,13 +421,13 @@ describe("ClineProvider - Sticky Mode", () => {
 			await provider.addClineToStack(mockTask)
 
 			// Switch mode
-			await provider.handleModeSwitch("architect")
+			await provider.handleModeSwitch("outline")
 
 			// Verify updateTaskHistory was called with mode in the history item
 			expect(updateTaskHistorySpy).toHaveBeenCalledWith(
 				expect.objectContaining({
 					id: taskId,
-					mode: "architect",
+					mode: "outline",
 				}),
 			)
 		})
@@ -448,7 +448,7 @@ describe("ClineProvider - Sticky Mode", () => {
 				cacheWrites: 0,
 				cacheReads: 0,
 				totalCost: 0.001,
-				mode: "architect", // Saved mode
+				mode: "outline", // Saved mode
 			}
 
 			// Mock updateGlobalState to track mode updates
@@ -458,7 +458,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			await provider.createTaskWithHistoryItem(historyItem)
 
 			// Verify mode was restored via updateGlobalState
-			expect(updateGlobalStateSpy).toHaveBeenCalledWith("mode", "architect")
+			expect(updateGlobalStateSpy).toHaveBeenCalledWith("mode", "outline")
 		})
 
 		it("should use current mode if history item has no saved mode", async () => {
@@ -466,7 +466,7 @@ describe("ClineProvider - Sticky Mode", () => {
 
 			// Set current mode
 			mockContext.globalState.get = vi.fn().mockImplementation((key: string) => {
-				if (key === "mode") return "code"
+				if (key === "mode") return "draft"
 				return undefined
 			})
 
@@ -509,7 +509,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			await provider.resolveWebviewView(mockWebviewView)
 
 			// Set current mode
-			await provider.setValue("mode", "debug")
+			await provider.setValue("mode", "revise")
 
 			// Create a mock task
 			const mockTask = new Task({
@@ -546,11 +546,11 @@ describe("ClineProvider - Sticky Mode", () => {
 			await provider.addClineToStack(mockTask)
 
 			// Trigger a mode switch
-			await provider.handleModeSwitch("debug")
+			await provider.handleModeSwitch("revise")
 
 			// Verify mode was included in the updated history item
 			expect(updatedHistoryItem).toBeDefined()
-			expect(updatedHistoryItem.mode).toBe("debug")
+			expect(updatedHistoryItem.mode).toBe("revise")
 		})
 	})
 
@@ -562,7 +562,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			// the parent task's mode is preserved and not changed by the subtask's mode switch
 
 			// Set initial mode to architect
-			await provider.setValue("mode", "architect")
+			await provider.setValue("mode", "outline")
 
 			// Create parent task
 			const parentTask = new Task({
@@ -575,7 +575,7 @@ describe("ClineProvider - Sticky Mode", () => {
 
 			// Create a simple task history tracking object
 			const taskModes: Record<string, string> = {
-				[parentTaskId]: "architect", // Parent starts with architect mode
+				[parentTaskId]: "outline", // Parent starts with architect mode
 			}
 
 			// Mock getGlobalState to return task history
@@ -622,7 +622,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			const subtaskId = (subtask as any).taskId || "subtask-id"
 
 			// Initialize subtask with parent's mode
-			taskModes[subtaskId] = "architect"
+			taskModes[subtaskId] = "outline"
 
 			// Mock getCurrentTask to return the parent task initially
 			const getCurrentTaskMock = vi.spyOn(provider, "getCurrentTask")
@@ -635,13 +635,13 @@ describe("ClineProvider - Sticky Mode", () => {
 			getCurrentTaskMock.mockReturnValue(subtask as any)
 
 			// Switch subtask to code mode - this should only affect the subtask
-			await provider.handleModeSwitch("code")
+			await provider.handleModeSwitch("draft")
 
 			// Verify that the parent task's mode is still architect
-			expect(taskModes[parentTaskId]).toBe("architect")
+			expect(taskModes[parentTaskId]).toBe("outline")
 
 			// Verify the subtask has code mode
-			expect(taskModes[subtaskId]).toBe("code")
+			expect(taskModes[subtaskId]).toBe("draft")
 		})
 	})
 
@@ -660,10 +660,10 @@ describe("ClineProvider - Sticky Mode", () => {
 			await provider.addClineToStack(mockTask)
 
 			// Switch mode - should not throw
-			await expect(provider.handleModeSwitch("architect")).resolves.not.toThrow()
+			await expect(provider.handleModeSwitch("outline")).resolves.not.toThrow()
 
 			// Verify mode was still updated in global state
-			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "architect")
+			expect(mockContext.globalState.update).toHaveBeenCalledWith("mode", "outline")
 		})
 
 		it("should handle null/undefined mode gracefully", async () => {
@@ -716,11 +716,11 @@ describe("ClineProvider - Sticky Mode", () => {
 			const architectConfigId = provider.getProviderProfileEntry("architect-config")?.id
 
 			// Associate configs with modes
-			await provider.providerSettingsManager.setModeConfig("code", codeConfigId!)
-			await provider.providerSettingsManager.setModeConfig("architect", architectConfigId!)
+			await provider.providerSettingsManager.setModeConfig("draft", codeConfigId!)
+			await provider.providerSettingsManager.setModeConfig("outline", architectConfigId!)
 
 			// Start in code mode with code config
-			await provider.handleModeSwitch("code")
+			await provider.handleModeSwitch("draft")
 
 			// Create a history item with architect mode
 			const historyItem: HistoryItem = {
@@ -733,7 +733,7 @@ describe("ClineProvider - Sticky Mode", () => {
 				cacheWrites: 0,
 				cacheReads: 0,
 				totalCost: 0.001,
-				mode: "architect", // Task was created in architect mode
+				mode: "outline", // Task was created in architect mode
 			}
 
 			// Restore the task from history
@@ -741,7 +741,7 @@ describe("ClineProvider - Sticky Mode", () => {
 
 			// Verify that the mode was restored
 			const state = await provider.getState()
-			expect(state.mode).toBe("architect")
+			expect(state.mode).toBe("outline")
 
 			// Verify that the API configuration was also restored
 			expect(state.currentApiConfigName).toBe("architect-config")
@@ -796,7 +796,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			// Create a mock task
 			const mockTask = {
 				taskId: "test-task-id",
-				_taskMode: "code",
+				_taskMode: "draft",
 				emit: vi.fn(),
 				saveClineMessages: vi.fn(),
 				clineMessages: [],
@@ -832,9 +832,9 @@ describe("ClineProvider - Sticky Mode", () => {
 
 			// Simulate concurrent mode switches
 			const switches = [
-				provider.handleModeSwitch("architect"),
-				provider.handleModeSwitch("debug"),
-				provider.handleModeSwitch("code"),
+				provider.handleModeSwitch("outline"),
+				provider.handleModeSwitch("revise"),
+				provider.handleModeSwitch("draft"),
 			]
 
 			await Promise.all(switches)
@@ -844,13 +844,13 @@ describe("ClineProvider - Sticky Mode", () => {
 			const lastModeCall = modeCalls[modeCalls.length - 1]
 
 			// Verify the last mode switch wins
-			expect(lastModeCall).toEqual(["mode", "code"])
+			expect(lastModeCall).toEqual(["mode", "draft"])
 
 			// Verify task history was updated with final mode
 			const lastCall = updateTaskHistorySpy.mock.calls[updateTaskHistorySpy.mock.calls.length - 1]
 			expect(lastCall[0]).toMatchObject({
 				id: mockTask.taskId,
-				mode: "code",
+				mode: "draft",
 			})
 		})
 
@@ -860,7 +860,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			// Create a mock task with slow save operation
 			const mockTask = {
 				taskId: "test-task-id",
-				_taskMode: "code",
+				_taskMode: "draft",
 				emit: vi.fn(),
 				saveClineMessages: vi.fn().mockImplementation(async () => {
 					// Simulate slow save
@@ -886,7 +886,7 @@ describe("ClineProvider - Sticky Mode", () => {
 					cacheWrites: 0,
 					cacheReads: 0,
 					totalCost: 0,
-					mode: "code",
+					mode: "draft",
 				},
 			])
 
@@ -897,13 +897,13 @@ describe("ClineProvider - Sticky Mode", () => {
 			const savePromise = mockTask.saveClineMessages()
 
 			// Switch mode during save
-			await provider.handleModeSwitch("architect")
+			await provider.handleModeSwitch("outline")
 
 			// Wait for save to complete
 			await savePromise
 
 			// Task should have the new mode
-			expect((mockTask as any)._taskMode).toBe("architect")
+			expect((mockTask as any)._taskMode).toBe("outline")
 		})
 	})
 
@@ -915,7 +915,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			// This test should verify that behavior
 			const mockTask = {
 				taskId: "test-task-id",
-				_taskMode: "code",
+				_taskMode: "draft",
 				emit: vi.fn(),
 				saveClineMessages: vi.fn(),
 				clineMessages: [],
@@ -943,7 +943,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			let emitCallCount = 0
 			const mockTask = {
 				taskId: "test-task-id",
-				_taskMode: "code",
+				_taskMode: "draft",
 				emit: vi.fn().mockImplementation((event) => {
 					emitCallCount++
 					// Only throw on the second emit call (taskModeSwitched event)
@@ -987,7 +987,7 @@ describe("ClineProvider - Sticky Mode", () => {
 
 			// The handleModeSwitch method doesn't catch errors from emit, so it will throw
 			// The error is thrown before the task's mode is updated
-			await expect(provider.handleModeSwitch("architect")).rejects.toThrow("Emit failed")
+			await expect(provider.handleModeSwitch("outline")).rejects.toThrow("Emit failed")
 
 			// Since the error is thrown before updating the task's _taskMode,
 			// neither the task mode nor global state are updated
@@ -995,7 +995,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			expect(modeCalls.length).toBe(0)
 
 			// The task's mode should NOT have been updated since the error occurred first
-			expect(mockTask._taskMode).toBe("code")
+			expect(mockTask._taskMode).toBe("draft")
 
 			consoleErrorSpy.mockRestore()
 		})
@@ -1006,7 +1006,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			// Create a mock task
 			const mockTask = {
 				taskId: "test-task-id",
-				_taskMode: "code",
+				_taskMode: "draft",
 				emit: vi.fn(),
 				saveClineMessages: vi.fn(),
 				clineMessages: [],
@@ -1040,7 +1040,7 @@ describe("ClineProvider - Sticky Mode", () => {
 
 			// The updateTaskHistory failure will cause handleModeSwitch to throw
 			// This is the actual behavior based on the test failure
-			await expect(provider.handleModeSwitch("architect")).rejects.toThrow("Update failed")
+			await expect(provider.handleModeSwitch("outline")).rejects.toThrow("Update failed")
 
 			consoleErrorSpy.mockRestore()
 		})
@@ -1053,7 +1053,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			// Create multiple mock tasks
 			const task1 = {
 				taskId: "task-1",
-				_taskMode: "code",
+				_taskMode: "draft",
 				emit: vi.fn(),
 				saveClineMessages: vi.fn(),
 				clineMessages: [],
@@ -1063,7 +1063,7 @@ describe("ClineProvider - Sticky Mode", () => {
 
 			const task2 = {
 				taskId: "task-2",
-				_taskMode: "architect",
+				_taskMode: "outline",
 				emit: vi.fn(),
 				saveClineMessages: vi.fn(),
 				clineMessages: [],
@@ -1073,7 +1073,7 @@ describe("ClineProvider - Sticky Mode", () => {
 
 			const task3 = {
 				taskId: "task-3",
-				_taskMode: "debug",
+				_taskMode: "revise",
 				emit: vi.fn(),
 				saveClineMessages: vi.fn(),
 				clineMessages: [],
@@ -1098,7 +1098,7 @@ describe("ClineProvider - Sticky Mode", () => {
 					cacheWrites: 0,
 					cacheReads: 0,
 					totalCost: 0,
-					mode: "code",
+					mode: "draft",
 				},
 				{
 					id: task2.taskId,
@@ -1110,7 +1110,7 @@ describe("ClineProvider - Sticky Mode", () => {
 					cacheWrites: 0,
 					cacheReads: 0,
 					totalCost: 0,
-					mode: "architect",
+					mode: "outline",
 				},
 				{
 					id: task3.taskId,
@@ -1122,7 +1122,7 @@ describe("ClineProvider - Sticky Mode", () => {
 					cacheWrites: 0,
 					cacheReads: 0,
 					totalCost: 0,
-					mode: "debug",
+					mode: "revise",
 				},
 			])
 
@@ -1136,25 +1136,25 @@ describe("ClineProvider - Sticky Mode", () => {
 
 			// Simulate simultaneous mode switches for different tasks
 			getCurrentTaskSpy.mockReturnValue(task1 as any)
-			const switch1 = provider.handleModeSwitch("architect")
+			const switch1 = provider.handleModeSwitch("outline")
 
 			getCurrentTaskSpy.mockReturnValue(task2 as any)
-			const switch2 = provider.handleModeSwitch("debug")
+			const switch2 = provider.handleModeSwitch("revise")
 
 			getCurrentTaskSpy.mockReturnValue(task3 as any)
-			const switch3 = provider.handleModeSwitch("code")
+			const switch3 = provider.handleModeSwitch("draft")
 
 			await Promise.all([switch1, switch2, switch3])
 
 			// Verify each task was updated with its new mode
-			expect(task1._taskMode).toBe("architect")
-			expect(task2._taskMode).toBe("debug")
-			expect(task3._taskMode).toBe("code")
+			expect(task1._taskMode).toBe("outline")
+			expect(task2._taskMode).toBe("revise")
+			expect(task3._taskMode).toBe("draft")
 
 			// Verify emit was called for each task
-			expect(task1.emit).toHaveBeenCalledWith("taskModeSwitched", task1.taskId, "architect")
-			expect(task2.emit).toHaveBeenCalledWith("taskModeSwitched", task2.taskId, "debug")
-			expect(task3.emit).toHaveBeenCalledWith("taskModeSwitched", task3.taskId, "code")
+			expect(task1.emit).toHaveBeenCalledWith("taskModeSwitched", task1.taskId, "outline")
+			expect(task2.emit).toHaveBeenCalledWith("taskModeSwitched", task2.taskId, "revise")
+			expect(task3.emit).toHaveBeenCalledWith("taskModeSwitched", task3.taskId, "draft")
 		})
 	})
 
@@ -1173,7 +1173,7 @@ describe("ClineProvider - Sticky Mode", () => {
 				cacheWrites: 0,
 				cacheReads: 0,
 				totalCost: 0.001,
-				mode: "architect",
+				mode: "outline",
 			}
 
 			// Mock getTaskWithId to be slow
@@ -1195,7 +1195,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			const initPromise = provider.createTaskWithHistoryItem(historyItem)
 
 			// Try to switch mode during initialization
-			await provider.handleModeSwitch("code")
+			await provider.handleModeSwitch("draft")
 
 			// Wait for initialization to complete
 			await initPromise
@@ -1203,10 +1203,10 @@ describe("ClineProvider - Sticky Mode", () => {
 			// Check all mode update calls
 			const modeCalls = vi.mocked(mockContext.globalState.update).mock.calls.filter((call) => call[0] === "mode")
 
-			// Based on the actual behavior, the mode switch to "code" happens and persists
+			// Based on the actual behavior, the mode switch to "draft" happens and persists
 			// The history mode restoration doesn't override it
 			const lastModeCall = modeCalls[modeCalls.length - 1]
-			expect(lastModeCall).toEqual(["mode", "code"])
+			expect(lastModeCall).toEqual(["mode", "draft"])
 		})
 
 		it("should handle rapid task switches during mode changes", async () => {
@@ -1215,7 +1215,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			// Create multiple tasks
 			const tasks = Array.from({ length: 5 }, (_, i) => ({
 				taskId: `task-${i}`,
-				_taskMode: "code",
+				_taskMode: "draft",
 				emit: vi.fn(),
 				saveClineMessages: vi.fn(),
 				clineMessages: [],
@@ -1235,7 +1235,7 @@ describe("ClineProvider - Sticky Mode", () => {
 			const switches: Promise<void>[] = []
 			tasks.forEach((task, index) => {
 				getCurrentTaskSpy.mockReturnValue(task as any)
-				const mode = ["architect", "debug", "code"][index % 3]
+				const mode = ["outline", "revise", "draft"][index % 3]
 				switches.push(provider.handleModeSwitch(mode as any))
 			})
 

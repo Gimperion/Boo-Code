@@ -75,7 +75,7 @@ describe("getEnvironmentDetails", () => {
 			terminalOutputLineLimit: 100,
 			maxWorkspaceFiles: 50,
 			maxOpenTabsContext: 10,
-			mode: "code",
+			mode: "draft",
 			customModes: [],
 			experiments: {},
 			customInstructions: "test instructions",
@@ -154,7 +154,7 @@ describe("getEnvironmentDetails", () => {
 
 		expect(mockProvider.getState).toHaveBeenCalled()
 
-		expect(getFullModeDetails).toHaveBeenCalledWith("code", [], undefined, {
+		expect(getFullModeDetails).toHaveBeenCalledWith("draft", [], undefined, {
 			cwd: mockCwd,
 			globalCustomInstructions: "test instructions",
 			language: "en",

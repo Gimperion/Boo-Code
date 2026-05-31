@@ -107,7 +107,7 @@ describe("isToolAllowedForMode", () => {
 
 			// Should allow path-only for architect mode too
 			expect(
-				isToolAllowedForMode("write_to_file", "architect", [], undefined, {
+				isToolAllowedForMode("write_to_file", "outline", [], undefined, {
 					path: "test.js",
 				}),
 			).toBe(true)
@@ -208,7 +208,7 @@ describe("isToolAllowedForMode", () => {
 		it("allows architect mode to edit markdown files only", () => {
 			// Should allow editing markdown files
 			expect(
-				isToolAllowedForMode("write_to_file", "architect", [], undefined, {
+				isToolAllowedForMode("write_to_file", "outline", [], undefined, {
 					path: "test.md",
 					content: "# Test",
 				}),
@@ -216,7 +216,7 @@ describe("isToolAllowedForMode", () => {
 
 			// Should allow applying diffs to markdown files
 			expect(
-				isToolAllowedForMode("apply_diff", "architect", [], undefined, {
+				isToolAllowedForMode("apply_diff", "outline", [], undefined, {
 					path: "readme.md",
 					diff: "- old\n+ new",
 				}),
@@ -224,21 +224,21 @@ describe("isToolAllowedForMode", () => {
 
 			// Should reject non-markdown files
 			expect(() =>
-				isToolAllowedForMode("write_to_file", "architect", [], undefined, {
+				isToolAllowedForMode("write_to_file", "outline", [], undefined, {
 					path: "test.js",
 					content: "console.log('test')",
 				}),
 			).toThrow(FileRestrictionError)
 			expect(() =>
-				isToolAllowedForMode("write_to_file", "architect", [], undefined, {
+				isToolAllowedForMode("write_to_file", "outline", [], undefined, {
 					path: "test.js",
 					content: "console.log('test')",
 				}),
 			).toThrow(/Markdown files only/)
 
 			// Should maintain read capabilities
-			expect(isToolAllowedForMode("read_file", "architect", [])).toBe(true)
-			expect(isToolAllowedForMode("use_mcp_tool", "architect", [])).toBe(true)
+			expect(isToolAllowedForMode("read_file", "outline", [])).toBe(true)
+			expect(isToolAllowedForMode("use_mcp_tool", "outline", [])).toBe(true)
 		})
 
 		it("applies restrictions to apply_diff", () => {
@@ -246,7 +246,7 @@ describe("isToolAllowedForMode", () => {
 
 			// Should allow markdown files in architect mode
 			expect(
-				isToolAllowedForMode("apply_diff", "architect", [], undefined, {
+				isToolAllowedForMode("apply_diff", "outline", [], undefined, {
 					path: "test.md",
 					diff: "- old content\n+ new content",
 				}),
@@ -254,13 +254,13 @@ describe("isToolAllowedForMode", () => {
 
 			// Non-markdown file should throw
 			expect(() =>
-				isToolAllowedForMode("apply_diff", "architect", [], undefined, {
+				isToolAllowedForMode("apply_diff", "outline", [], undefined, {
 					path: "test.py",
 					diff: "- old content\n+ new content",
 				}),
 			).toThrow(FileRestrictionError)
 			expect(() =>
-				isToolAllowedForMode("apply_diff", "architect", [], undefined, {
+				isToolAllowedForMode("apply_diff", "outline", [], undefined, {
 					path: "test.py",
 					diff: "- old content\n+ new content",
 				}),
@@ -418,7 +418,7 @@ describe("isToolAllowedForMode", () => {
 			expect(
 				isToolAllowedForMode(
 					"apply_patch",
-					"architect",
+					"outline",
 					[],
 					undefined,
 					{
@@ -432,7 +432,7 @@ describe("isToolAllowedForMode", () => {
 			expect(() =>
 				isToolAllowedForMode(
 					"apply_patch",
-					"architect",
+					"outline",
 					[],
 					undefined,
 					{
@@ -447,7 +447,7 @@ describe("isToolAllowedForMode", () => {
 			expect(
 				isToolAllowedForMode(
 					"search_replace",
-					"architect",
+					"outline",
 					[],
 					undefined,
 					{
@@ -463,7 +463,7 @@ describe("isToolAllowedForMode", () => {
 			expect(() =>
 				isToolAllowedForMode(
 					"search_replace",
-					"architect",
+					"outline",
 					[],
 					undefined,
 					{
@@ -480,7 +480,7 @@ describe("isToolAllowedForMode", () => {
 			expect(
 				isToolAllowedForMode(
 					"edit_file",
-					"architect",
+					"outline",
 					[],
 					undefined,
 					{
@@ -496,7 +496,7 @@ describe("isToolAllowedForMode", () => {
 			expect(() =>
 				isToolAllowedForMode(
 					"edit_file",
-					"architect",
+					"outline",
 					[],
 					undefined,
 					{
@@ -606,10 +606,10 @@ describe("FileRestrictionError", () => {
 
 	describe("debug mode", () => {
 		it("is configured correctly", () => {
-			const debugMode = modes.find((mode) => mode.slug === "debug")
+			const debugMode = modes.find((mode) => mode.slug === "revise")
 			expect(debugMode).toBeDefined()
 			expect(debugMode).toMatchObject({
-				slug: "debug",
+				slug: "revise",
 				name: "🪲 Debug",
 				roleDefinition:
 					"You are Zoo, an expert software debugger specializing in systematic problem diagnosis and resolution.",
@@ -628,9 +628,9 @@ describe("FileRestrictionError", () => {
 		})
 
 		it("returns base mode when no overrides exist", async () => {
-			const result = await getFullModeDetails("debug")
+			const result = await getFullModeDetails("revise")
 			expect(result).toMatchObject({
-				slug: "debug",
+				slug: "revise",
 				name: "🪲 Debug",
 				roleDefinition:
 					"You are Zoo, an expert software debugger specializing in systematic problem diagnosis and resolution.",
@@ -640,16 +640,16 @@ describe("FileRestrictionError", () => {
 		it("applies custom mode overrides", async () => {
 			const customModes: ModeConfig[] = [
 				{
-					slug: "debug",
+					slug: "revise",
 					name: "Custom Debug",
 					roleDefinition: "Custom debug role",
 					groups: ["read"],
 				},
 			]
 
-			const result = await getFullModeDetails("debug", customModes)
+			const result = await getFullModeDetails("revise", customModes)
 			expect(result).toMatchObject({
-				slug: "debug",
+				slug: "revise",
 				name: "Custom Debug",
 				roleDefinition: "Custom debug role",
 				groups: ["read"],
@@ -664,7 +664,7 @@ describe("FileRestrictionError", () => {
 				},
 			}
 
-			const result = await getFullModeDetails("debug", undefined, customModePrompts)
+			const result = await getFullModeDetails("revise", undefined, customModePrompts)
 			expect(result.roleDefinition).toBe("Overridden role")
 			expect(result.customInstructions).toBe("Overridden instructions")
 		})
@@ -676,13 +676,13 @@ describe("FileRestrictionError", () => {
 				language: "en",
 			}
 
-			await getFullModeDetails("debug", undefined, undefined, options)
+			await getFullModeDetails("revise", undefined, undefined, options)
 
 			expect(addCustomInstructions).toHaveBeenCalledWith(
 				expect.any(String),
 				"Global instructions",
 				"/test/path",
-				"debug",
+				"revise",
 				{ language: "en" },
 			)
 		})
@@ -720,10 +720,10 @@ describe("FileRestrictionError", () => {
 })
 
 describe("getModeSelection", () => {
-	const builtInAskMode = modes.find((m) => m.slug === "ask")!
+	const builtInAskMode = modes.find((m) => m.slug === "interview")!
 	const customModesList: ModeConfig[] = [
 		{
-			slug: "code", // Override
+			slug: "draft", // Override
 			name: "Custom Code Mode",
 			roleDefinition: "Custom Code Role",
 			customInstructions: "Custom Code Instructions",
@@ -749,27 +749,27 @@ describe("getModeSelection", () => {
 	}
 
 	test("should return built-in mode details if no overrides", () => {
-		const selection = getModeSelection("ask")
+		const selection = getModeSelection("interview")
 		expect(selection.roleDefinition).toBe(builtInAskMode.roleDefinition)
 		expect(selection.baseInstructions).toBe(builtInAskMode.customInstructions || "")
 	})
 
 	test("should prioritize promptComponent for built-in mode if no custom mode exists for that slug", () => {
-		const selection = getModeSelection("ask", promptComponentAsk) // "ask" is not in customModesList
+		const selection = getModeSelection("interview", promptComponentAsk) // "interview" is not in customModesList
 		expect(selection.roleDefinition).toBe(promptComponentAsk.roleDefinition)
 		expect(selection.baseInstructions).toBe(promptComponentAsk.customInstructions)
 	})
 
 	test("should prioritize customMode over built-in mode", () => {
-		const selection = getModeSelection("code", undefined, customModesList)
-		const customCode = customModesList.find((m) => m.slug === "code")!
+		const selection = getModeSelection("draft", undefined, customModesList)
+		const customCode = customModesList.find((m) => m.slug === "draft")!
 		expect(selection.roleDefinition).toBe(customCode.roleDefinition)
 		expect(selection.baseInstructions).toBe(customCode.customInstructions)
 	})
 
 	test("should prioritize customMode over promptComponent and built-in mode", () => {
-		const selection = getModeSelection("code", promptComponentCode, customModesList)
-		const customCode = customModesList.find((m) => m.slug === "code")!
+		const selection = getModeSelection("draft", promptComponentCode, customModesList)
+		const customCode = customModesList.find((m) => m.slug === "draft")!
 		expect(selection.roleDefinition).toBe(customCode.roleDefinition)
 		expect(selection.baseInstructions).toBe(customCode.customInstructions)
 	})
@@ -801,11 +801,11 @@ describe("getModeSelection", () => {
 
 	test("customMode's properties are used if customMode exists, ignoring promptComponent's properties", () => {
 		const selection = getModeSelection(
-			"code",
+			"draft",
 			{ roleDefinition: "Prompt Role Only", customInstructions: "Prompt Instructions Only" },
 			customModesList,
 		)
-		const customCodeMode = customModesList.find((m) => m.slug === "code")!
+		const customCodeMode = customModesList.find((m) => m.slug === "draft")!
 		expect(selection.roleDefinition).toBe(customCodeMode.roleDefinition) // Takes from customCodeMode
 		expect(selection.baseInstructions).toBe(customCodeMode.customInstructions) // Takes from customCodeMode
 	})
@@ -892,14 +892,14 @@ describe("getModeSelection", () => {
 
 	test("customMode with empty/undefined fields takes precedence over promptComponent and builtInMode", () => {
 		const customModeMinimal: ModeConfig[] = [
-			{ slug: "ask", name: "Custom Ask Minimal", roleDefinition: "", groups: ["read"] }, // roleDef empty, customInstr undefined
+			{ slug: "interview", name: "Custom Ask Minimal", roleDefinition: "", groups: ["read"] }, // roleDef empty, customInstr undefined
 		]
 		const promptComponentMinimal: PromptComponent = {
 			roleDefinition: "Prompt Min Role",
 			customInstructions: "Prompt Min Instr",
 		}
-		// "ask" is in customModeMinimal
-		const selection = getModeSelection("ask", promptComponentMinimal, customModeMinimal)
+		// "interview" is in customModeMinimal
+		const selection = getModeSelection("interview", promptComponentMinimal, customModeMinimal)
 		// customMode is chosen
 		expect(selection.roleDefinition).toBe("") // From customModeMinimal
 		expect(selection.baseInstructions).toBe("") // From customModeMinimal
@@ -907,20 +907,20 @@ describe("getModeSelection", () => {
 
 	test("promptComponent is used if customMode for slug does not exist, even if customModesList is provided", () => {
 		// 'ask' is not in customModesList, but 'code' and 'new-custom' are.
-		const selection = getModeSelection("ask", promptComponentAsk, customModesList)
+		const selection = getModeSelection("interview", promptComponentAsk, customModesList)
 		expect(selection.roleDefinition).toBe(promptComponentAsk.roleDefinition)
 		expect(selection.baseInstructions).toBe(promptComponentAsk.customInstructions)
 	})
 
 	test("builtInMode is used if customMode for slug does not exist and promptComponent is not provided", () => {
 		// 'ask' is not in customModesList
-		const selection = getModeSelection("ask", undefined, customModesList)
+		const selection = getModeSelection("interview", undefined, customModesList)
 		expect(selection.roleDefinition).toBe(builtInAskMode.roleDefinition)
 		expect(selection.baseInstructions).toBe(builtInAskMode.customInstructions || "")
 	})
 
 	test("promptComponent is used if customMode is not provided (undefined customModesList)", () => {
-		const selection = getModeSelection("ask", promptComponentAsk, undefined)
+		const selection = getModeSelection("interview", promptComponentAsk, undefined)
 		expect(selection.roleDefinition).toBe(promptComponentAsk.roleDefinition)
 		expect(selection.baseInstructions).toBe(promptComponentAsk.customInstructions)
 	})

@@ -48,7 +48,7 @@ describe("presentAssistantMessage - Unknown Tool Handling", () => {
 			providerRef: {
 				deref: () => ({
 					getState: vi.fn().mockResolvedValue({
-						mode: "code",
+						mode: "draft",
 						customModes: [],
 					}),
 				}),

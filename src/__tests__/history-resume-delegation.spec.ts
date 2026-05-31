@@ -58,7 +58,7 @@ describe("History resume delegation - parent metadata transitions", () => {
 				tokensIn: 0,
 				tokensOut: 0,
 				totalCost: 0,
-				mode: "code",
+				mode: "draft",
 				workspace: "/tmp",
 			},
 		})
@@ -148,7 +148,7 @@ describe("History resume delegation - parent metadata transitions", () => {
 		} as unknown as ClineProvider
 
 		// Start with existing messages in history
-		const existingUiMessages = [{ type: "ask", ask: "tool", text: "Old tool", ts: 50 }]
+		const existingUiMessages = [{ type: "interview", ask: "tool", text: "Old tool", ts: 50 }]
 		const existingApiMessages = [{ role: "user", content: [{ type: "text", text: "Old request" }], ts: 50 }]
 
 		vi.mocked(readTaskMessages).mockResolvedValue(existingUiMessages as any)
@@ -231,7 +231,7 @@ describe("History resume delegation - parent metadata transitions", () => {
 		} as unknown as ClineProvider
 
 		// Include an assistant message with new_task tool_use to exercise the tool_result path
-		const existingUiMessages = [{ type: "ask", ask: "tool", text: "new_task request", ts: 50 }]
+		const existingUiMessages = [{ type: "interview", ask: "tool", text: "new_task request", ts: 50 }]
 		const existingApiMessages = [
 			{ role: "user", content: [{ type: "text", text: "Create a subtask" }], ts: 40 },
 			{
@@ -241,7 +241,7 @@ describe("History resume delegation - parent metadata transitions", () => {
 						type: "tool_use",
 						name: "new_task",
 						id: "toolu_abc123",
-						input: { mode: "code", message: "Do something" },
+						input: { mode: "draft", message: "Do something" },
 					},
 				],
 				ts: 50,
@@ -317,7 +317,7 @@ describe("History resume delegation - parent metadata transitions", () => {
 		} as unknown as ClineProvider
 
 		// No assistant tool_use in history
-		const existingUiMessages = [{ type: "ask", ask: "tool", text: "subtask request", ts: 50 }]
+		const existingUiMessages = [{ type: "interview", ask: "tool", text: "subtask request", ts: 50 }]
 		const existingApiMessages = [{ role: "user", content: [{ type: "text", text: "Create a subtask" }], ts: 40 }]
 
 		vi.mocked(readTaskMessages).mockResolvedValue(existingUiMessages as any)

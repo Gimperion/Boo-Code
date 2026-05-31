@@ -68,7 +68,7 @@ describe("presentAssistantMessage - Custom Tool Recording", () => {
 			providerRef: {
 				deref: () => ({
 					getState: vi.fn().mockResolvedValue({
-						mode: "code",
+						mode: "draft",
 						customModes: [],
 						experiments: {
 							customTools: true, // Enable by default
@@ -196,7 +196,7 @@ describe("presentAssistantMessage - Custom Tool Recording", () => {
 			mockTask.providerRef = {
 				deref: () => ({
 					getState: vi.fn().mockResolvedValue({
-						mode: "code",
+						mode: "draft",
 						customModes: [],
 						experiments: {
 							customTools: true,
@@ -234,7 +234,7 @@ describe("presentAssistantMessage - Custom Tool Recording", () => {
 			mockTask.providerRef = {
 				deref: () => ({
 					getState: vi.fn().mockResolvedValue({
-						mode: "code",
+						mode: "draft",
 						customModes: [],
 						experiments: {
 							customTools: false, // Disabled
@@ -282,7 +282,7 @@ describe("presentAssistantMessage - Custom Tool Recording", () => {
 			mockTask.providerRef = {
 				deref: () => ({
 					getState: vi.fn().mockResolvedValue({
-						mode: "code",
+						mode: "draft",
 						customModes: [],
 						experiments: {
 							customTools: false,
@@ -315,7 +315,7 @@ describe("presentAssistantMessage - Custom Tool Recording", () => {
 			mockTask.providerRef = {
 				deref: () => ({
 					getState: vi.fn().mockResolvedValue({
-						mode: "code",
+						mode: "draft",
 						customModes: [],
 						experiments: {
 							customTools: false,

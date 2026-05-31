@@ -116,34 +116,34 @@ vi.mock("@roo-code/cloud", () => ({
 vi.mock("../../../shared/modes", () => {
 	const mockModes = [
 		{
-			slug: "code",
+			slug: "draft",
 			name: "Code Mode",
 			roleDefinition: "You are a code assistant",
 			groups: ["read", "edit"],
 		},
 		{
-			slug: "architect",
+			slug: "outline",
 			name: "Architect Mode",
 			roleDefinition: "You are an architect",
 			groups: ["read", "edit"],
 		},
 		{
-			slug: "ask",
+			slug: "interview",
 			name: "Ask Mode",
 			roleDefinition: "You are an assistant",
 			groups: ["read"],
 		},
 		{
-			slug: "debug",
+			slug: "revise",
 			name: "Debug Mode",
 			roleDefinition: "You are a debugger",
 			groups: ["read", "edit"],
 		},
 		{
-			slug: "orchestrator",
-			name: "Orchestrator Mode",
-			roleDefinition: "You are an orchestrator",
-			groups: [],
+			slug: "develop",
+			name: "Develop Mode",
+			roleDefinition: "You are a world builder",
+			groups: ["read", "edit", "command", "mcp"],
 		},
 	]
 
@@ -165,18 +165,18 @@ vi.mock("../../../shared/modes", () => {
 			return allModes
 		}),
 		getModeBySlug: vi.fn().mockReturnValue({
-			slug: "code",
+			slug: "draft",
 			name: "Code Mode",
 			roleDefinition: "You are a code assistant",
 			groups: ["read", "edit"],
 		}),
-		defaultModeSlug: "code",
+		defaultModeSlug: "draft",
 	}
 })
 
 vi.mock("../../prompts/system", () => ({
 	SYSTEM_PROMPT: vi.fn().mockResolvedValue("mocked system prompt"),
-	codeMode: "code",
+	codeMode: "draft",
 }))
 
 vi.mock("../../../api/providers/fetchers/modelCache", () => ({
@@ -229,7 +229,7 @@ describe("ClineProvider - Lock API Config Across Modes", () => {
 		}
 
 		const globalState: Record<string, unknown> = {
-			mode: "code",
+			mode: "draft",
 			currentApiConfigName: "default-profile",
 		}
 
@@ -335,7 +335,7 @@ describe("ClineProvider - Lock API Config Across Modes", () => {
 				.spyOn(provider, "activateProviderProfile")
 				.mockResolvedValue(undefined)
 
-			await provider.handleModeSwitch("architect")
+			await provider.handleModeSwitch("outline")
 
 			expect(getModeConfigIdSpy).not.toHaveBeenCalled()
 			expect(listConfigSpy).not.toHaveBeenCalled()
@@ -360,9 +360,9 @@ describe("ClineProvider - Lock API Config Across Modes", () => {
 				.spyOn(provider, "activateProviderProfile")
 				.mockResolvedValue(undefined)
 
-			await provider.handleModeSwitch("architect")
+			await provider.handleModeSwitch("outline")
 
-			expect(getModeConfigIdSpy).toHaveBeenCalledWith("architect")
+			expect(getModeConfigIdSpy).toHaveBeenCalledWith("outline")
 			expect(activateProviderProfileSpy).toHaveBeenCalledWith({ name: "architect-profile" })
 		})
 	})

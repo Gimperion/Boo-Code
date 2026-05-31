@@ -317,7 +317,7 @@ Start debugging.`
 				filePath: path.join("/test/cwd", ".roo", "commands", "debug-app.md"),
 				description: "Debug the application",
 				argumentHint: undefined,
-				mode: "debug",
+				mode: "revise",
 			})
 		})
 
@@ -362,7 +362,7 @@ Deploy the application.`
 				filePath: path.join("/test/cwd", ".roo", "commands", "deploy.md"),
 				description: "Deploy to environment",
 				argumentHint: "staging | production",
-				mode: "code",
+				mode: "draft",
 			})
 		})
 	})

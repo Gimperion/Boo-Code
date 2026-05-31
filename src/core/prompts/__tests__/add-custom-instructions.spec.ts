@@ -201,7 +201,7 @@ describe("addCustomInstructions", () => {
 			false, // supportsImages
 			undefined, // mcpHub
 			undefined, // diffStrategy
-			"architect", // mode
+			"outline", // mode
 			undefined, // customModePrompts
 			undefined, // customModes
 			undefined, // globalCustomInstructions
@@ -221,7 +221,7 @@ describe("addCustomInstructions", () => {
 			false, // supportsImages
 			undefined, // mcpHub
 			undefined, // diffStrategy
-			"ask", // mode
+			"interview", // mode
 			undefined, // customModePrompts
 			undefined, // customModes
 			undefined, // globalCustomInstructions

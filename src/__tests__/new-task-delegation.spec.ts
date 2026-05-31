@@ -21,13 +21,13 @@ describe("Task.startSubtask() metadata-driven delegation", () => {
 		;(parent as any).providerRef = { deref: () => provider }
 		;(parent as any).emit = vi.fn()
 
-		const child = await (Task.prototype as any).startSubtask.call(parent, "Do something", [], "code")
+		const child = await (Task.prototype as any).startSubtask.call(parent, "Do something", [], "draft")
 
 		expect(provider.delegateParentAndOpenChild).toHaveBeenCalledWith({
 			parentTaskId: "parent-1",
 			message: "Do something",
 			initialTodos: [],
-			mode: "code",
+			mode: "draft",
 		})
 		expect(child.taskId).toBe("child-1")
 

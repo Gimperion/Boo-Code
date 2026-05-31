@@ -72,7 +72,7 @@ describe("UnboundHandler", () => {
 		const messages: Anthropic.Messages.MessageParam[] = [{ role: "user", content: "hello" }]
 		const stream = handler.createMessage("system", messages, {
 			taskId: "task-123",
-			mode: "architect",
+			mode: "outline",
 			tools: [],
 		})
 
@@ -85,7 +85,7 @@ describe("UnboundHandler", () => {
 				unbound_metadata: {
 					originApp: "zoo-code",
 					taskId: "task-123",
-					mode: "architect",
+					mode: "outline",
 				},
 			}),
 		)

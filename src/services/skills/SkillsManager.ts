@@ -179,7 +179,7 @@ export class SkillsManager {
 	 * Get skills available for the current mode.
 	 * Resolves overrides: project > global, mode-specific > generic.
 	 *
-	 * @param currentMode - The current mode slug (e.g., 'code', 'architect')
+	 * @param currentMode - The current mode slug (e.g., 'draft', 'outline')
 	 */
 	getSkillsForMode(currentMode: string): SkillMetadata[] {
 		const resolvedSkills = new Map<string, SkillMetadata>()

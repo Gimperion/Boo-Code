@@ -8,7 +8,7 @@ describe("getPromptComponent", () => {
 			architect: {},
 		}
 
-		const result = getPromptComponent(customModePrompts, "architect")
+		const result = getPromptComponent(customModePrompts, "outline")
 		expect(result).toBeUndefined()
 	})
 
@@ -20,19 +20,19 @@ describe("getPromptComponent", () => {
 			} as any,
 		}
 
-		const result = getPromptComponent(customModePrompts, "architect")
+		const result = getPromptComponent(customModePrompts, "outline")
 		expect(result).toEqual({ foo: "bar", baz: 123 })
 	})
 
 	it("should return undefined for missing mode", () => {
 		const customModePrompts: CustomModePrompts = {}
 
-		const result = getPromptComponent(customModePrompts, "architect")
+		const result = getPromptComponent(customModePrompts, "outline")
 		expect(result).toBeUndefined()
 	})
 
 	it("should return undefined when customModePrompts is undefined", () => {
-		const result = getPromptComponent(undefined, "architect")
+		const result = getPromptComponent(undefined, "outline")
 		expect(result).toBeUndefined()
 	})
 
@@ -46,7 +46,7 @@ describe("getPromptComponent", () => {
 			architect: component,
 		}
 
-		const result = getPromptComponent(customModePrompts, "architect")
+		const result = getPromptComponent(customModePrompts, "outline")
 		expect(result).toEqual(component)
 	})
 
@@ -60,7 +60,7 @@ describe("getPromptComponent", () => {
 			},
 		}
 
-		const result = getPromptComponent(customModePrompts, "architect")
+		const result = getPromptComponent(customModePrompts, "outline")
 		expect(result).toEqual({
 			roleDefinition: "Test role",
 			customInstructions: "Test instructions",
@@ -78,7 +78,7 @@ describe("getPromptComponent", () => {
 			} as any,
 		}
 
-		const result = getPromptComponent(customModePrompts, "architect")
+		const result = getPromptComponent(customModePrompts, "outline")
 		expect(result).toEqual({
 			roleDefinition: "Test role",
 			foo: "bar",

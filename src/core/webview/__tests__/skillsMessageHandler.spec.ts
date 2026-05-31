@@ -84,7 +84,7 @@ describe("skillsMessageHandler", () => {
 			description: "Project skill description",
 			path: "/project/.roo/skills/project-skill/SKILL.md",
 			source: "project",
-			mode: "code",
+			mode: "draft",
 		},
 	]
 
@@ -155,11 +155,11 @@ describe("skillsMessageHandler", () => {
 				skillName: "new-skill",
 				source: "project",
 				skillDescription: "New skill description",
-				skillMode: "code",
+				skillMode: "draft",
 			} as WebviewMessage)
 
 			expect(result).toEqual(mockSkills)
-			expect(mockCreateSkill).toHaveBeenCalledWith("new-skill", "project", "New skill description", ["code"])
+			expect(mockCreateSkill).toHaveBeenCalledWith("new-skill", "project", "New skill description", ["draft"])
 		})
 
 		it("returns undefined when required fields are missing", async () => {
@@ -224,11 +224,11 @@ describe("skillsMessageHandler", () => {
 				type: "deleteSkill",
 				skillName: "project-skill",
 				source: "project",
-				skillMode: "code",
+				skillMode: "draft",
 			} as WebviewMessage)
 
 			expect(result).toEqual([mockSkills[0]])
-			expect(mockDeleteSkill).toHaveBeenCalledWith("project-skill", "project", "code")
+			expect(mockDeleteSkill).toHaveBeenCalledWith("project-skill", "project", "draft")
 		})
 
 		it("returns undefined when required fields are missing", async () => {
@@ -275,11 +275,11 @@ describe("skillsMessageHandler", () => {
 				skillName: "test-skill",
 				source: "global",
 				skillMode: undefined,
-				newSkillMode: "code",
+				newSkillMode: "draft",
 			} as WebviewMessage)
 
 			expect(result).toEqual([mockSkills[0]])
-			expect(mockMoveSkill).toHaveBeenCalledWith("test-skill", "global", undefined, "code")
+			expect(mockMoveSkill).toHaveBeenCalledWith("test-skill", "global", undefined, "draft")
 			expect(mockPostMessageToWebview).toHaveBeenCalledWith({ type: "skills", skills: [mockSkills[0]] })
 		})
 
@@ -292,12 +292,12 @@ describe("skillsMessageHandler", () => {
 				type: "moveSkill",
 				skillName: "project-skill",
 				source: "project",
-				skillMode: "code",
-				newSkillMode: "architect",
+				skillMode: "draft",
+				newSkillMode: "outline",
 			} as WebviewMessage)
 
 			expect(result).toEqual([mockSkills[1]])
-			expect(mockMoveSkill).toHaveBeenCalledWith("project-skill", "project", "code", "architect")
+			expect(mockMoveSkill).toHaveBeenCalledWith("project-skill", "project", "draft", "outline")
 		})
 
 		it("returns undefined when required fields are missing", async () => {
@@ -323,7 +323,7 @@ describe("skillsMessageHandler", () => {
 				type: "moveSkill",
 				skillName: "test-skill",
 				source: "global",
-				newSkillMode: "code",
+				newSkillMode: "draft",
 			} as WebviewMessage)
 
 			expect(result).toBeUndefined()
@@ -357,7 +357,7 @@ describe("skillsMessageHandler", () => {
 				type: "openSkillFile",
 				skillName: "project-skill",
 				source: "project",
-				skillMode: "code",
+				skillMode: "draft",
 			} as WebviewMessage)
 
 			expect(mockFindSkillByNameAndSource).toHaveBeenCalledWith("project-skill", "project")

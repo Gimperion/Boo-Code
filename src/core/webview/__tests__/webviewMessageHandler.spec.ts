@@ -871,7 +871,7 @@ describe("webviewMessageHandler - requestCommands", () => {
 	it("includes skill slug commands and dedupes duplicate skill names while preserving first skill entry", async () => {
 		mockGetCommands.mockResolvedValue([])
 
-		const getTaskMode = vi.fn().mockResolvedValue("code")
+		const getTaskMode = vi.fn().mockResolvedValue("draft")
 		vi.mocked(mockClineProvider.getCurrentTask).mockReturnValue({
 			cwd: "/mock/workspace",
 			getTaskMode,
@@ -883,21 +883,21 @@ describe("webviewMessageHandler - requestCommands", () => {
 				description: "Primary skill slug",
 				path: "/mock/.roo/skills/skill-slug-entry/SKILL.md",
 				source: "project",
-				modeSlugs: ["code"],
+				modeSlugs: ["draft"],
 			},
 			{
 				name: "skill-slug-entry",
 				description: "Duplicate skill slug",
 				path: "/mock/.roo/skills/duplicate-skill/SKILL.md",
 				source: "global",
-				modeSlugs: ["code"],
+				modeSlugs: ["draft"],
 			},
 			{
 				name: "another-skill-slug",
 				description: "Another skill-generated command",
 				path: "/mock/.roo/skills/another-skill-slug/SKILL.md",
 				source: "global",
-				modeSlugs: ["code"],
+				modeSlugs: ["draft"],
 			},
 		])
 
@@ -945,7 +945,7 @@ describe("webviewMessageHandler - requestCommands", () => {
 			},
 		])
 
-		const getTaskMode = vi.fn().mockResolvedValue("code")
+		const getTaskMode = vi.fn().mockResolvedValue("draft")
 		vi.mocked(mockClineProvider.getCurrentTask).mockReturnValue({
 			cwd: "/mock/workspace",
 			getTaskMode,
@@ -957,14 +957,14 @@ describe("webviewMessageHandler - requestCommands", () => {
 				description: "Deploy skill",
 				path: "/mock/.roo/skills/deploy/SKILL.md",
 				source: "global",
-				modeSlugs: ["code"],
+				modeSlugs: ["draft"],
 			},
 			{
 				name: "skill-only",
 				description: "Skill-generated command",
 				path: "/mock/.roo/skills/skill-only/SKILL.md",
 				source: "project",
-				modeSlugs: ["code"],
+				modeSlugs: ["draft"],
 			},
 		])
 
@@ -974,7 +974,7 @@ describe("webviewMessageHandler - requestCommands", () => {
 
 		await webviewMessageHandler(mockClineProvider, { type: "requestCommands" })
 
-		expect(getSkillsForMode).toHaveBeenCalledWith("code")
+		expect(getSkillsForMode).toHaveBeenCalledWith("draft")
 
 		expect(mockClineProvider.postMessageToWebview).toHaveBeenCalledWith({
 			type: "commands",

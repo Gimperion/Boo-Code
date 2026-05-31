@@ -119,8 +119,8 @@ describe("AskFollowupQuestionTool", () => {
 		const params = {
 			question: "Switch mode?",
 			follow_up: [
-				{ text: "Use code mode", mode: "code" },
-				{ text: "Use architect mode", mode: "architect" },
+				{ text: "Use draft mode", mode: "draft" },
+				{ text: "Use outline mode", mode: "outline" },
 			],
 		}
 
@@ -129,8 +129,8 @@ describe("AskFollowupQuestionTool", () => {
 		const expectedJson = JSON.stringify({
 			question: "Switch mode?",
 			suggest: [
-				{ answer: "Use code mode", mode: "code" },
-				{ answer: "Use architect mode", mode: "architect" },
+				{ answer: "Use draft mode", mode: "draft" },
+				{ answer: "Use outline mode", mode: "outline" },
 			],
 		})
 
@@ -387,9 +387,9 @@ describe("AskFollowupQuestionTool", () => {
 		const params = {
 			question: "Choose?",
 			follow_up: [
-				{ text: "With mode", mode: "code" },
+				{ text: "With mode", mode: "draft" },
 				{ text: "Without mode" },
-				{ text: "Another with mode", mode: "architect" },
+				{ text: "Another with mode", mode: "outline" },
 			],
 		}
 
@@ -398,9 +398,9 @@ describe("AskFollowupQuestionTool", () => {
 		const expectedJson = JSON.stringify({
 			question: "Choose?",
 			suggest: [
-				{ answer: "With mode", mode: "code" },
+				{ answer: "With mode", mode: "draft" },
 				{ answer: "Without mode", mode: undefined },
-				{ answer: "Another with mode", mode: "architect" },
+				{ answer: "Another with mode", mode: "outline" },
 			],
 		})
 
@@ -455,7 +455,7 @@ describe("AskFollowupQuestionTool", () => {
 			NativeToolCallParser.startStreamingToolCall("call_123", "ask_followup_question")
 
 			// Simulate streaming JSON chunks
-			const chunk1 = '{"question":"What would you like?","follow_up":[{"text":"Option 1","mode":"code"}'
+			const chunk1 = '{"question":"What would you like?","follow_up":[{"text":"Option 1","mode":"draft"}'
 			const result1 = NativeToolCallParser.processStreamingChunk("call_123", chunk1)
 
 			expect(result1).not.toBeNull()
@@ -477,7 +477,7 @@ describe("AskFollowupQuestionTool", () => {
 
 			// Add complete JSON
 			const completeJson =
-				'{"question":"Choose an option","follow_up":[{"text":"Yes","mode":"code"},{"text":"No","mode":null}]}'
+				'{"question":"Choose an option","follow_up":[{"text":"Yes","mode":"draft"},{"text":"No","mode":null}]}'
 			NativeToolCallParser.processStreamingChunk("call_456", completeJson)
 
 			const result = NativeToolCallParser.finalizeStreamingToolCall("call_456")
@@ -491,7 +491,7 @@ describe("AskFollowupQuestionTool", () => {
 				expect(result.nativeArgs).toEqual({
 					question: "Choose an option",
 					follow_up: [
-						{ text: "Yes", mode: "code" },
+						{ text: "Yes", mode: "draft" },
 						{ text: "No", mode: null },
 					],
 				})
