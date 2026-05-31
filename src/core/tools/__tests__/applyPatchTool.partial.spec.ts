@@ -39,15 +39,15 @@ describe("ApplyPatchTool.handlePartial", () => {
 	const cwd = path.join(path.sep, "workspace", "project")
 	const mockedIsPathOutsideWorkspace = isPathOutsideWorkspace as MockedFunction<typeof isPathOutsideWorkspace>
 
-	let askSpy: MockedFunction<Task["interview"]>
-	let mockTask: Pick<Task, "cwd" | "interview">
+	let askSpy: MockedFunction<Task["ask"]>
+	let mockTask: Pick<Task, "cwd" | "ask">
 	let tool: ApplyPatchTool
 
 	beforeEach(() => {
 		vi.clearAllMocks()
 
 		askSpy = vi.fn().mockRejectedValue(new Error("ask() rejection is ignored for partial rows")) as MockedFunction<
-			Task["interview"]
+			Task["ask"]
 		>
 		mockTask = {
 			cwd,
