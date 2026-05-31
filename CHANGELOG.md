@@ -8,6 +8,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## 3.58.1
+
+### Added
+
+- **Context Loading:** Automatic discovery and injection of workspace context into system prompts
+    - Load workspace metadata (`.boo/instructions.md`, `.boo/style.md`, `workspace.boo.md`)
+    - Detect active component from file path with explicit override capability
+    - Load active component context (`component.boo.md`, active plan from `plans/` directory)
+    - Load knowledge files from `knowledge/` directory with `.booignore` filtering
+    - Context prioritization: workspace + component always preserved; knowledge trimmed first on token limit
+    - Context formatted and injected into system prompt for consistent AI behavior across conversation
+
+---
+
 ## 3.58.0
 
 ### Changed
