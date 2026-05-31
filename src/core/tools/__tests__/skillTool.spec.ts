@@ -25,7 +25,7 @@ describe("skillTool", () => {
 			ask: vi.fn().mockResolvedValue({}),
 			providerRef: {
 				deref: vi.fn().mockReturnValue({
-					getState: vi.fn().mockResolvedValue({ mode: "code" }),
+					getState: vi.fn().mockResolvedValue({ mode: "draft" }),
 					getSkillsManager: vi.fn().mockReturnValue(mockSkillsManager),
 				}),
 			},
@@ -287,7 +287,7 @@ Step 1: Create the server...`,
 		}
 
 		mockTask.providerRef.deref = vi.fn().mockReturnValue({
-			getState: vi.fn().mockResolvedValue({ mode: "code" }),
+			getState: vi.fn().mockResolvedValue({ mode: "draft" }),
 			getSkillsManager: vi.fn().mockReturnValue(undefined),
 		})
 

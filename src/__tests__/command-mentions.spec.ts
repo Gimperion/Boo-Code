@@ -124,11 +124,11 @@ describe("Command Mentions", () => {
 				true,
 				50,
 				skillsManager,
-				"code",
+				"draft",
 			)
 
 			expect(mockGetCommand).toHaveBeenCalledWith("/test/cwd", "skill-only")
-			expect(skillsManager.getSkillContent).toHaveBeenCalledWith("skill-only", "code")
+			expect(skillsManager.getSkillContent).toHaveBeenCalledWith("skill-only", "draft")
 			expect(result.text).toContain("Command 'skill-only' (see below for command content)")
 			expect(result.slashCommandHelp).toContain("Skill: skill-only")
 			expect(result.slashCommandHelp).toContain("Description: Skill-generated command")
@@ -164,7 +164,7 @@ describe("Command Mentions", () => {
 				true,
 				50,
 				skillsManager,
-				"code",
+				"draft",
 			)
 
 			expect(skillsManager.getSkillContent).not.toHaveBeenCalled()

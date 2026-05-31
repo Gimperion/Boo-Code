@@ -1499,7 +1499,7 @@ describe("CustomModesManager", () => {
 			const roomodesContent = {
 				customModes: [
 					{
-						slug: "code",
+						slug: "draft",
 						name: "Custom Code Mode",
 						roleDefinition: "Custom Role",
 						groups: ["read"],
@@ -1527,7 +1527,7 @@ describe("CustomModesManager", () => {
 				{ name: "rule1.md", isFile: () => true, parentPath: "/mock/workspace/.roo/rules-code" },
 			])
 
-			const result = await manager.exportModeWithRules("code")
+			const result = await manager.exportModeWithRules("draft")
 
 			expect(result.success).toBe(true)
 			expect(result.yaml).toContain("Custom Code Mode")

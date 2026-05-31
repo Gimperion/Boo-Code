@@ -174,7 +174,7 @@ describe("SecretStorageService", () => {
 					client_name: "Test Client",
 					redirect_uris: ["http://localhost:12345/callback"],
 					grant_types: ["authorization_code", "refresh_token"],
-					response_types: ["code"],
+					response_types: ["draft"],
 					token_endpoint_auth_method: "client_secret_post",
 				},
 			}

@@ -131,7 +131,7 @@ describe("MessageEnhancer", () => {
 		it("should limit task history to last 10 messages", async () => {
 			// Create 15 messages
 			const mockClineMessages: ClineMessage[] = Array.from({ length: 15 }, (_, i) => ({
-				type: i % 2 === 0 ? "ask" : "say",
+				type: i % 2 === 0 ? "interview" : "say",
 				say: i % 2 === 1 ? "text" : undefined,
 				text: `Message ${i + 1}`,
 				ts: i * 1000,
@@ -330,7 +330,7 @@ describe("MessageEnhancer", () => {
 			const malformedMessages = [
 				null,
 				undefined,
-				{ type: "ask" }, // Missing required properties
+				{ type: "interview" }, // Missing required properties
 				"not an object",
 			] as any
 

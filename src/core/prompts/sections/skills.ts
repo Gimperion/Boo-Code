@@ -17,7 +17,7 @@ function escapeXml(value: string): string {
  * Format matches the modes section style.
  *
  * @param skillsManager - The SkillsManager instance
- * @param currentMode - The current mode slug (e.g., 'code', 'architect')
+ * @param currentMode - The current mode slug (e.g., 'draft', 'outline')
  */
 export async function getSkillsSection(
 	skillsManager: SkillsManagerLike | undefined,

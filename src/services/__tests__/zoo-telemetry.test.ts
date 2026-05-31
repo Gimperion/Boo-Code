@@ -26,7 +26,7 @@ describe("sendLlmTelemetry", () => {
 		taskId: "task-123",
 		provider: "anthropic",
 		model: "claude-sonnet-4",
-		mode: "code",
+		mode: "draft",
 		inputTokens: 11,
 		outputTokens: 7,
 		cacheReadTokens: 3,

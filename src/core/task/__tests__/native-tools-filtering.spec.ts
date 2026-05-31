@@ -7,14 +7,14 @@ describe("Native Tools Filtering by Mode", () => {
 			// before being sent to the API.
 
 			const architectMode: ModeConfig = {
-				slug: "architect",
+				slug: "outline",
 				name: "Architect",
 				roleDefinition: "Test architect",
 				groups: ["read", "mcp"] as const,
 			}
 
 			const codeMode: ModeConfig = {
-				slug: "code",
+				slug: "draft",
 				name: "Code",
 				roleDefinition: "Test code",
 				groups: ["read", "edit", "command", "mcp"] as const,
@@ -31,7 +31,7 @@ describe("Native Tools Filtering by Mode", () => {
 				const toolGroup = TOOL_GROUPS[groupName]
 				if (toolGroup) {
 					toolGroup.tools.forEach((tool) => {
-						if (isToolAllowedForMode(tool as any, "architect", [architectMode])) {
+						if (isToolAllowedForMode(tool as any, "outline", [architectMode])) {
 							architectAllowedTools.add(tool)
 						}
 					})
@@ -58,7 +58,7 @@ describe("Native Tools Filtering by Mode", () => {
 				const toolGroup = TOOL_GROUPS[groupName]
 				if (toolGroup) {
 					toolGroup.tools.forEach((tool) => {
-						if (isToolAllowedForMode(tool as any, "code", [codeMode])) {
+						if (isToolAllowedForMode(tool as any, "draft", [codeMode])) {
 							codeAllowedTools.add(tool)
 						}
 					})

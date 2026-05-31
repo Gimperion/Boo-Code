@@ -157,7 +157,7 @@ describe("injectSyntheticToolResults", () => {
 				role: "assistant",
 				content: [
 					{ type: "tool_use", id: "tool-1", name: "read_file", input: { path: "test.ts" } },
-					{ type: "tool_use", id: "tool-2", name: "write_file", input: { path: "out.ts", content: "code" } },
+					{ type: "tool_use", id: "tool-2", name: "write_file", input: { path: "out.ts", content: "draft" } },
 				],
 				ts: 2,
 			},
@@ -522,7 +522,7 @@ describe("getEffectiveApiHistory", () => {
 				role: "assistant",
 				content: [
 					{ type: "tool_use", id: "orphan-1", name: "read_file", input: { path: "a.ts" } },
-					{ type: "tool_use", id: "orphan-2", name: "write_file", input: { path: "b.ts", content: "code" } },
+					{ type: "tool_use", id: "orphan-2", name: "write_file", input: { path: "b.ts", content: "draft" } },
 				],
 				condenseParent: condenseId,
 			},

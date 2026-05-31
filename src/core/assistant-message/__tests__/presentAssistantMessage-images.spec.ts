@@ -52,7 +52,7 @@ describe("presentAssistantMessage - Image Handling in Native Tool Calling", () =
 			providerRef: {
 				deref: () => ({
 					getState: vi.fn().mockResolvedValue({
-						mode: "code",
+						mode: "draft",
 						customModes: [],
 					}),
 				}),

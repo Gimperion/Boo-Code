@@ -149,7 +149,7 @@ describe("ClineProvider - API Handler Rebuild Guard", () => {
 		}
 
 		const globalState: Record<string, any> = {
-			mode: "code",
+			mode: "draft",
 			currentApiConfigName: "test-config",
 		}
 

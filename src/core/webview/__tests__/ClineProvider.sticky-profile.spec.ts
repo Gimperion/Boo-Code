@@ -120,30 +120,30 @@ vi.mock("@roo-code/cloud", () => ({
 vi.mock("../../../shared/modes", () => ({
 	modes: [
 		{
-			slug: "code",
+			slug: "draft",
 			name: "Code Mode",
 			roleDefinition: "You are a code assistant",
 			groups: ["read", "edit"],
 		},
 		{
-			slug: "architect",
+			slug: "outline",
 			name: "Architect Mode",
 			roleDefinition: "You are an architect",
 			groups: ["read", "edit"],
 		},
 	],
 	getModeBySlug: vi.fn().mockReturnValue({
-		slug: "code",
+		slug: "draft",
 		name: "Code Mode",
 		roleDefinition: "You are a code assistant",
 		groups: ["read", "edit"],
 	}),
-	defaultModeSlug: "code",
+	defaultModeSlug: "draft",
 }))
 
 vi.mock("../../prompts/system", () => ({
 	SYSTEM_PROMPT: vi.fn().mockResolvedValue("mocked system prompt"),
-	codeMode: "code",
+	codeMode: "draft",
 }))
 
 vi.mock("../../../api/providers/fetchers/modelCache", () => ({
@@ -214,7 +214,7 @@ describe("ClineProvider - Sticky Provider Profile", () => {
 		}
 
 		const globalState: Record<string, string | undefined> = {
-			mode: "code",
+			mode: "draft",
 			currentApiConfigName: "default-profile",
 		}
 
@@ -482,7 +482,7 @@ describe("ClineProvider - Sticky Provider Profile", () => {
 				cacheWrites: 0,
 				cacheReads: 0,
 				totalCost: 0.001,
-				mode: "code",
+				mode: "draft",
 				apiConfigName: "saved-profile", // Saved provider profile
 			}
 
@@ -554,7 +554,7 @@ describe("ClineProvider - Sticky Provider Profile", () => {
 				cacheWrites: 0,
 				cacheReads: 0,
 				totalCost: 0.001,
-				mode: "code",
+				mode: "draft",
 			}
 
 			const activateProviderProfileSpy = vi
@@ -618,7 +618,7 @@ describe("ClineProvider - Sticky Provider Profile", () => {
 				cacheWrites: 0,
 				cacheReads: 0,
 				totalCost: 0.001,
-				mode: "architect", // Mode has a different preferred profile
+				mode: "outline", // Mode has a different preferred profile
 				apiConfigName: "task-specific-profile", // Task's actual profile
 			}
 

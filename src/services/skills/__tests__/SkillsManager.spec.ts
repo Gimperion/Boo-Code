@@ -297,7 +297,7 @@ Instructions here...`
 			const skills = skillsManager.getAllSkills()
 			expect(skills).toHaveLength(1)
 			expect(skills[0].name).toBe("refactoring")
-			expect(skills[0].mode).toBe("code")
+			expect(skills[0].mode).toBe("draft")
 		})
 
 		it("should skip skills with missing required fields", async () => {
@@ -769,7 +769,7 @@ description: Roo version (should take priority)
 
 			await skillsManager.discoverSkills()
 
-			const skills = skillsManager.getSkillsForMode("code")
+			const skills = skillsManager.getSkillsForMode("draft")
 			const commonSkill = skills.find((s) => s.name === "common-skill")
 			expect(commonSkill).toBeDefined()
 			// .roo should override .agents
@@ -823,7 +823,7 @@ Instructions here...`
 			const skills = skillsManager.getAllSkills()
 			expect(skills).toHaveLength(1)
 			expect(skills[0].name).toBe("agent-code-skill")
-			expect(skills[0].mode).toBe("code")
+			expect(skills[0].mode).toBe("draft")
 		})
 	})
 
@@ -878,7 +878,7 @@ Instructions`
 
 			await skillsManager.discoverSkills()
 
-			const codeSkills = skillsManager.getSkillsForMode("code")
+			const codeSkills = skillsManager.getSkillsForMode("draft")
 
 			// Should include both generic and code-specific skills
 			expect(codeSkills.length).toBe(2)
@@ -923,7 +923,7 @@ Instructions`)
 
 			await skillsManager.discoverSkills()
 
-			const skills = skillsManager.getSkillsForMode("code")
+			const skills = skillsManager.getSkillsForMode("draft")
 			const sharedSkill = skills.find((s) => s.name === "shared-skill")
 
 			// Project skill should override global
@@ -967,11 +967,11 @@ Instructions`)
 
 			await skillsManager.discoverSkills()
 
-			const skills = skillsManager.getSkillsForMode("code")
+			const skills = skillsManager.getSkillsForMode("draft")
 			const testSkill = skills.find((s) => s.name === "test-skill")
 
 			// Mode-specific should override generic
-			expect(testSkill?.mode).toBe("code")
+			expect(testSkill?.mode).toBe("draft")
 		})
 
 		it("should not include mode-specific skills for other modes", async () => {
@@ -1007,7 +1007,7 @@ Instructions`)
 
 			await skillsManager.discoverSkills()
 
-			const codeSkills = skillsManager.getSkillsForMode("code")
+			const codeSkills = skillsManager.getSkillsForMode("draft")
 			const architectSkill = codeSkills.find((s) => s.name === "architect-only")
 
 			expect(architectSkill).toBeUndefined()
@@ -1222,7 +1222,7 @@ Instructions`)
 			mockMkdir.mockResolvedValue(undefined)
 			mockWriteFile.mockResolvedValue(undefined)
 
-			const createdPath = await skillsManager.createSkill("code-skill", "global", "A code skill", ["code"])
+			const createdPath = await skillsManager.createSkill("code-skill", "global", "A code skill", ["draft"])
 
 			// Skills are always created in the generic skills directory now; mode info is in frontmatter
 			expect(createdPath).toBe(p(GLOBAL_ROO_DIR, "skills", "code-skill", "SKILL.md"))
@@ -1410,7 +1410,7 @@ Instructions`)
 			expect(skillsManager.getSkill("test-skill", "global")).toBeDefined()
 
 			// Move the skill to code mode
-			await skillsManager.moveSkill("test-skill", "global", undefined, "code")
+			await skillsManager.moveSkill("test-skill", "global", undefined, "draft")
 
 			expect(mockMkdir).toHaveBeenCalledWith(destSkillsDir, { recursive: true })
 			expect(mockRename).toHaveBeenCalledWith(sourceDir, destDir)
@@ -1464,10 +1464,10 @@ Instructions`)
 			await skillsManager.discoverSkills()
 
 			// Verify skill exists with mode
-			expect(skillsManager.getSkill("test-skill", "global", "code")).toBeDefined()
+			expect(skillsManager.getSkill("test-skill", "global", "draft")).toBeDefined()
 
 			// Move the skill to architect mode
-			await skillsManager.moveSkill("test-skill", "global", "code", "architect")
+			await skillsManager.moveSkill("test-skill", "global", "draft", "outline")
 
 			expect(mockMkdir).toHaveBeenCalledWith(destSkillsDir, { recursive: true })
 			expect(mockRename).toHaveBeenCalledWith(sourceDir, destDir)
@@ -1520,10 +1520,10 @@ Instructions`)
 			await skillsManager.discoverSkills()
 
 			// Verify skill exists with mode
-			expect(skillsManager.getSkill("test-skill", "global", "code")).toBeDefined()
+			expect(skillsManager.getSkill("test-skill", "global", "draft")).toBeDefined()
 
 			// Move the skill to generic (no mode)
-			await skillsManager.moveSkill("test-skill", "global", "code", undefined)
+			await skillsManager.moveSkill("test-skill", "global", "draft", undefined)
 
 			expect(mockMkdir).toHaveBeenCalledWith(globalSkillsDir, { recursive: true })
 			expect(mockRename).toHaveBeenCalledWith(sourceDir, destDir)
@@ -1577,7 +1577,7 @@ Instructions`)
 
 			await skillsManager.discoverSkills()
 
-			await expect(skillsManager.moveSkill("non-existent", "global", undefined, "code")).rejects.toThrow(
+			await expect(skillsManager.moveSkill("non-existent", "global", undefined, "draft")).rejects.toThrow(
 				"not found",
 			)
 		})
@@ -1624,7 +1624,7 @@ Instructions`)
 
 			await skillsManager.discoverSkills()
 
-			await expect(skillsManager.moveSkill("test-skill", "global", undefined, "code")).rejects.toThrow(
+			await expect(skillsManager.moveSkill("test-skill", "global", undefined, "draft")).rejects.toThrow(
 				"already exists",
 			)
 		})
@@ -1686,7 +1686,7 @@ Instructions`)
 			await skillsManager.discoverSkills()
 
 			// Move the skill to architect mode
-			await skillsManager.moveSkill("test-skill", "global", "code", "architect")
+			await skillsManager.moveSkill("test-skill", "global", "draft", "outline")
 
 			// Verify empty directory was cleaned up
 			expect(mockRmdir).toHaveBeenCalledWith(sourceSkillsDir)
@@ -1750,7 +1750,7 @@ Instructions`)
 			await skillsManager.discoverSkills()
 
 			// Move the skill to architect mode
-			await skillsManager.moveSkill("test-skill", "global", "code", "architect")
+			await skillsManager.moveSkill("test-skill", "global", "draft", "outline")
 
 			// Verify directory was NOT cleaned up (still has other skills)
 			expect(mockRmdir).not.toHaveBeenCalled()

@@ -24,7 +24,7 @@ vi.mock("../../../shared/package", () => ({
 // Mock other modules first - these are hoisted to the top
 vi.mock("../../../shared/modes", () => ({
 	getModeBySlug: vi.fn(),
-	defaultModeSlug: "ask",
+	defaultModeSlug: "interview",
 }))
 
 vi.mock("../../prompts/responses", () => ({
@@ -92,14 +92,14 @@ const mockCline = {
 	recordToolError: mockRecordToolError,
 	consecutiveMistakeCount: 0,
 	isPaused: false,
-	pausedModeSlug: "ask",
+	pausedModeSlug: "interview",
 	taskId: "mock-parent-task-id",
 	enableCheckpoints: false,
 	checkpointSave: mockCheckpointSave,
 	startSubtask: mockStartSubtask,
 	providerRef: {
 		deref: vi.fn(() => ({
-			getState: vi.fn(() => ({ customModes: [], mode: "ask" })),
+			getState: vi.fn(() => ({ customModes: [], mode: "interview" })),
 			handleModeSwitch: vi.fn(),
 			delegateParentAndOpenChild: mockDelegateParentAndOpenChild,
 		})),
@@ -129,7 +129,7 @@ describe("newTaskTool", () => {
 		vi.clearAllMocks()
 		mockAskApproval.mockResolvedValue(true) // Default to approved
 		vi.mocked(getModeBySlug).mockReturnValue({
-			slug: "code",
+			slug: "draft",
 			name: "Code Mode",
 			roleDefinition: "Test role definition",
 			groups: ["command", "read", "edit"],
@@ -148,7 +148,7 @@ describe("newTaskTool", () => {
 			type: "tool_use", // Add required 'type' property
 			name: "new_task", // Correct property name
 			params: {
-				mode: "code",
+				mode: "draft",
 				message: "Review this: \\\\@file1.txt and also \\\\\\\\@file2.txt", // Input with \\@ and \\\\@
 				todos: "[ ] First task\n[ ] Second task",
 			},
@@ -171,7 +171,7 @@ describe("newTaskTool", () => {
 				expect.objectContaining({ content: "First task" }),
 				expect.objectContaining({ content: "Second task" }),
 			]),
-			"code",
+			"draft",
 		)
 
 		// Verify side effects
@@ -183,7 +183,7 @@ describe("newTaskTool", () => {
 			type: "tool_use", // Add required 'type' property
 			name: "new_task", // Correct property name
 			params: {
-				mode: "code",
+				mode: "draft",
 				message: "This is already unescaped: \\@file1.txt",
 				todos: "[ ] Test todo",
 			},
@@ -199,7 +199,7 @@ describe("newTaskTool", () => {
 		expect(mockStartSubtask).toHaveBeenCalledWith(
 			"This is already unescaped: \\@file1.txt", // Expected: \@ remains \@
 			expect.any(Array),
-			"code",
+			"draft",
 		)
 	})
 
@@ -208,7 +208,7 @@ describe("newTaskTool", () => {
 			type: "tool_use", // Add required 'type' property
 			name: "new_task", // Correct property name
 			params: {
-				mode: "code",
+				mode: "draft",
 				message: "A normal mention @file1.txt",
 				todos: "[ ] Test todo",
 			},
@@ -224,7 +224,7 @@ describe("newTaskTool", () => {
 		expect(mockStartSubtask).toHaveBeenCalledWith(
 			"A normal mention @file1.txt", // Expected: @ remains @
 			expect.any(Array),
-			"code",
+			"draft",
 		)
 	})
 
@@ -233,7 +233,7 @@ describe("newTaskTool", () => {
 			type: "tool_use", // Add required 'type' property
 			name: "new_task", // Correct property name
 			params: {
-				mode: "code",
+				mode: "draft",
 				message: "Mix: @file0.txt, \\@file1.txt, \\\\@file2.txt, \\\\\\\\@file3.txt",
 				todos: "[ ] Test todo",
 			},
@@ -249,7 +249,7 @@ describe("newTaskTool", () => {
 		expect(mockStartSubtask).toHaveBeenCalledWith(
 			"Mix: @file0.txt, \\@file1.txt, \\@file2.txt, \\\\\\@file3.txt", // Unit Test Expectation: @->@, \@->\@, \\@->\@, \\\\@->\\\\@
 			expect.any(Array),
-			"code",
+			"draft",
 		)
 	})
 
@@ -258,7 +258,7 @@ describe("newTaskTool", () => {
 			type: "tool_use",
 			name: "new_task",
 			params: {
-				mode: "code",
+				mode: "draft",
 				message: "Test message",
 				// todos missing - should work for backward compatibility
 			},
@@ -277,7 +277,7 @@ describe("newTaskTool", () => {
 		expect(mockCline.recordToolError).not.toHaveBeenCalledWith("new_task")
 
 		// Should create task with empty todos array
-		expect(mockStartSubtask).toHaveBeenCalledWith("Test message", [], "code")
+		expect(mockStartSubtask).toHaveBeenCalledWith("Test message", [], "draft")
 
 		// Should complete successfully
 		expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Delegated to child task"))
@@ -288,7 +288,7 @@ describe("newTaskTool", () => {
 			type: "tool_use",
 			name: "new_task",
 			params: {
-				mode: "code",
+				mode: "draft",
 				message: "Test message with todos",
 				todos: "[ ] First task\n[ ] Second task",
 			},
@@ -308,7 +308,7 @@ describe("newTaskTool", () => {
 				expect.objectContaining({ content: "First task" }),
 				expect.objectContaining({ content: "Second task" }),
 			]),
-			"code",
+			"draft",
 		)
 
 		expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Delegated to child task"))
@@ -342,7 +342,7 @@ describe("newTaskTool", () => {
 			type: "tool_use",
 			name: "new_task",
 			params: {
-				mode: "code",
+				mode: "draft",
 				// message missing
 				todos: "[ ] Test todo",
 			},
@@ -365,7 +365,7 @@ describe("newTaskTool", () => {
 			type: "tool_use",
 			name: "new_task",
 			params: {
-				mode: "code",
+				mode: "draft",
 				message: "Test message",
 				todos: "[ ] Pending task\n[x] Completed task\n[-] In progress task",
 			},
@@ -385,7 +385,7 @@ describe("newTaskTool", () => {
 				expect.objectContaining({ content: "Completed task", status: "completed" }),
 				expect.objectContaining({ content: "In progress task", status: "in_progress" }),
 			]),
-			"code",
+			"draft",
 		)
 	})
 
@@ -401,7 +401,7 @@ describe("newTaskTool", () => {
 				type: "tool_use",
 				name: "new_task",
 				params: {
-					mode: "code",
+					mode: "draft",
 					message: "Test message",
 					// todos missing - should work when setting is disabled
 				},
@@ -420,7 +420,7 @@ describe("newTaskTool", () => {
 			expect(mockCline.recordToolError).not.toHaveBeenCalledWith("new_task")
 
 			// Should create task with empty todos array
-			expect(mockStartSubtask).toHaveBeenCalledWith("Test message", [], "code")
+			expect(mockStartSubtask).toHaveBeenCalledWith("Test message", [], "draft")
 
 			// Should complete successfully
 			expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Delegated to child task"))
@@ -437,7 +437,7 @@ describe("newTaskTool", () => {
 				type: "tool_use",
 				name: "new_task",
 				params: {
-					mode: "code",
+					mode: "draft",
 					message: "Test message",
 					// todos missing - should error when setting is enabled
 				},
@@ -473,7 +473,7 @@ describe("newTaskTool", () => {
 				type: "tool_use",
 				name: "new_task",
 				params: {
-					mode: "code",
+					mode: "draft",
 					message: "Test message",
 					todos: "[ ] First task\n[ ] Second task",
 				},
@@ -497,7 +497,7 @@ describe("newTaskTool", () => {
 					expect.objectContaining({ content: "First task" }),
 					expect.objectContaining({ content: "Second task" }),
 				]),
-				"code",
+				"draft",
 			)
 
 			// Should complete successfully
@@ -515,7 +515,7 @@ describe("newTaskTool", () => {
 				type: "tool_use",
 				name: "new_task",
 				params: {
-					mode: "code",
+					mode: "draft",
 					message: "Test message",
 					todos: "", // Empty string should be accepted
 				},
@@ -533,7 +533,7 @@ describe("newTaskTool", () => {
 			expect(mockCline.consecutiveMistakeCount).toBe(0)
 
 			// Should create task with empty todos array
-			expect(mockStartSubtask).toHaveBeenCalledWith("Test message", [], "code")
+			expect(mockStartSubtask).toHaveBeenCalledWith("Test message", [], "draft")
 
 			// Should complete successfully
 			expect(mockPushToolResult).toHaveBeenCalledWith(expect.stringContaining("Delegated to child task"))
@@ -550,7 +550,7 @@ describe("newTaskTool", () => {
 				type: "tool_use",
 				name: "new_task",
 				params: {
-					mode: "code",
+					mode: "draft",
 					message: "Test message",
 				},
 				partial: false,
@@ -584,7 +584,7 @@ describe("newTaskTool", () => {
 					type: "tool_use",
 					name: "new_task",
 					params: {
-						mode: "code",
+						mode: "draft",
 						message: "Test message",
 					},
 					partial: false,
@@ -613,7 +613,7 @@ describe("newTaskTool delegation flow", () => {
 		// Arrange: stub provider delegation
 		const providerSpy = {
 			getState: vi.fn().mockResolvedValue({
-				mode: "ask",
+				mode: "interview",
 				experiments: {},
 			}),
 			delegateParentAndOpenChild: vi.fn().mockResolvedValue({ taskId: "child-1" }),
@@ -630,7 +630,7 @@ describe("newTaskTool delegation flow", () => {
 			recordToolError: mockRecordToolError,
 			consecutiveMistakeCount: 0,
 			isPaused: false,
-			pausedModeSlug: "ask",
+			pausedModeSlug: "interview",
 			taskId: "mock-parent-task-id",
 			enableCheckpoints: false,
 			checkpointSave: mockCheckpointSave,
@@ -644,7 +644,7 @@ describe("newTaskTool delegation flow", () => {
 			type: "tool_use",
 			name: "new_task",
 			params: {
-				mode: "code",
+				mode: "draft",
 				message: "Do something",
 				// no todos -> should default to []
 			},
@@ -663,7 +663,7 @@ describe("newTaskTool delegation flow", () => {
 			parentTaskId: "mock-parent-task-id",
 			message: "Do something",
 			initialTodos: [],
-			mode: "code",
+			mode: "draft",
 		})
 
 		// Assert: legacy path not used

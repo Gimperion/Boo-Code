@@ -109,7 +109,7 @@ describe("runSlashCommandTool", () => {
 				experiments: {
 					runSlashCommand: true,
 				},
-				mode: "code",
+				mode: "draft",
 			}),
 			getSkillsManager: vi.fn().mockReturnValue({
 				getSkillContent,
@@ -120,7 +120,7 @@ describe("runSlashCommandTool", () => {
 
 		await runSlashCommandTool.handle(mockTask as Task, block, mockCallbacks)
 
-		expect(getSkillContent).toHaveBeenCalledWith("skill-only", "code")
+		expect(getSkillContent).toHaveBeenCalledWith("skill-only", "draft")
 		expect(mockCallbacks.askApproval).toHaveBeenCalledWith(
 			"tool",
 			JSON.stringify({
@@ -177,7 +177,7 @@ Use skill workflow`,
 				experiments: {
 					runSlashCommand: true,
 				},
-				mode: "code",
+				mode: "draft",
 			}),
 			getSkillsManager: vi.fn().mockReturnValue({
 				getSkillContent,
@@ -454,7 +454,7 @@ Deploy application to production`,
 			source: "project" as const,
 			filePath: ".roo/commands/debug-app.md",
 			description: "Debug the application",
-			mode: "debug",
+			mode: "revise",
 		}
 
 		mockTask.providerRef.deref = vi.fn().mockReturnValue({
@@ -471,7 +471,7 @@ Deploy application to production`,
 
 		await runSlashCommandTool.handle(mockTask as Task, block, mockCallbacks)
 
-		expect(mockHandleModeSwitch).toHaveBeenCalledWith("debug")
+		expect(mockHandleModeSwitch).toHaveBeenCalledWith("revise")
 		expect(mockCallbacks.pushToolResult).toHaveBeenCalledWith(
 			`Command: /debug-app
 Description: Debug the application
@@ -538,7 +538,7 @@ Start debugging the application`,
 			source: "project" as const,
 			filePath: ".roo/commands/debug-app.md",
 			description: "Debug the application",
-			mode: "debug",
+			mode: "revise",
 		}
 
 		mockTask.providerRef.deref = vi.fn().mockReturnValue({
@@ -563,7 +563,7 @@ Start debugging the application`,
 				args: undefined,
 				source: "project",
 				description: "Debug the application",
-				mode: "debug",
+				mode: "revise",
 			}),
 		)
 	})

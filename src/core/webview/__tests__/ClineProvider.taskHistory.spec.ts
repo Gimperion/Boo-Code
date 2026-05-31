@@ -153,7 +153,7 @@ vi.mock("../../../api", () => ({
 
 vi.mock("../../prompts/system", () => ({
 	SYSTEM_PROMPT: vi.fn().mockImplementation(async () => "mocked system prompt"),
-	codeMode: "code",
+	codeMode: "draft",
 }))
 
 vi.mock("../../../integrations/workspace/WorkspaceTracker", () => {
@@ -194,15 +194,15 @@ vi.mock("../../../api/providers/fetchers/modelCache", () => ({
 }))
 
 vi.mock("../../../shared/modes", () => ({
-	modes: [{ slug: "code", name: "Code Mode", roleDefinition: "You are a code assistant", groups: ["read", "edit"] }],
+	modes: [{ slug: "draft", name: "Code Mode", roleDefinition: "You are a code assistant", groups: ["read", "edit"] }],
 	getModeBySlug: vi.fn().mockReturnValue({
-		slug: "code",
+		slug: "draft",
 		name: "Code Mode",
 		roleDefinition: "You are a code assistant",
 		groups: ["read", "edit"],
 	}),
 	getGroupName: vi.fn().mockReturnValue("General Tools"),
-	defaultModeSlug: "code",
+	defaultModeSlug: "draft",
 }))
 
 vi.mock("../diff/strategies/multi-search-replace", () => ({
@@ -255,7 +255,7 @@ describe("ClineProvider Task History Synchronization", () => {
 		taskHistoryState = []
 
 		const globalState: Record<string, any> = {
-			mode: "code",
+			mode: "draft",
 			currentApiConfigName: "current-config",
 			taskHistory: taskHistoryState,
 		}

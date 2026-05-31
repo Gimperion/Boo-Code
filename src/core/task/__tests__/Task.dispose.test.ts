@@ -45,7 +45,7 @@ describe("Task dispose method", () => {
 			context: {
 				globalStorageUri: { fsPath: "/test/path" },
 			},
-			getState: vi.fn().mockResolvedValue({ mode: "code" }),
+			getState: vi.fn().mockResolvedValue({ mode: "draft" }),
 			log: vi.fn(),
 		}
 

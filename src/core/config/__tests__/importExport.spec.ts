@@ -166,7 +166,7 @@ describe("importExport", () => {
 					currentApiConfigName: "test",
 					apiConfigs: { test: { apiProvider: "openai" as ProviderName, apiKey: "test-key", id: "test-id" } },
 				},
-				globalSettings: { mode: "code", autoApprovalEnabled: true },
+				globalSettings: { mode: "draft", autoApprovalEnabled: true },
 			})
 
 			;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -183,7 +183,7 @@ describe("importExport", () => {
 				{ name: "default", id: "default-id", apiProvider: "anthropic" as ProviderName },
 			])
 
-			mockContextProxy.export.mockResolvedValue({ mode: "code" })
+			mockContextProxy.export.mockResolvedValue({ mode: "draft" })
 
 			const result = await importSettings({
 				providerSettingsManager: mockProviderSettingsManager,
@@ -204,7 +204,7 @@ describe("importExport", () => {
 				modeApiConfigs: {},
 			})
 
-			expect(mockContextProxy.setValues).toHaveBeenCalledWith({ mode: "code", autoApprovalEnabled: true })
+			expect(mockContextProxy.setValues).toHaveBeenCalledWith({ mode: "draft", autoApprovalEnabled: true })
 			expect(mockContextProxy.setValue).toHaveBeenCalledWith("currentApiConfigName", "test")
 
 			expect(mockContextProxy.setValue).toHaveBeenCalledWith("listApiConfigMeta", [
@@ -260,7 +260,7 @@ describe("importExport", () => {
 				{ name: "default", id: "default-id", apiProvider: "anthropic" as ProviderName },
 			])
 
-			mockContextProxy.export.mockResolvedValue({ mode: "code" })
+			mockContextProxy.export.mockResolvedValue({ mode: "draft" })
 
 			const result = await importSettings({
 				providerSettingsManager: mockProviderSettingsManager,
@@ -333,7 +333,7 @@ describe("importExport", () => {
 			;(vscode.window.showOpenDialog as Mock).mockResolvedValue([{ fsPath: "/mock/path/settings.json" }])
 
 			const mockFileContent = JSON.stringify({
-				globalSettings: { mode: "code" },
+				globalSettings: { mode: "draft" },
 				providerProfiles: {
 					currentApiConfigName: "anthropic",
 					apiConfigs: { default: { apiProvider: "anthropic" as const, id: "anthropic" } },
@@ -342,7 +342,7 @@ describe("importExport", () => {
 
 			;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
 
-			mockContextProxy.export.mockResolvedValue({ mode: "code" })
+			mockContextProxy.export.mockResolvedValue({ mode: "draft" })
 
 			const result = await importSettings({
 				providerSettingsManager,
@@ -368,7 +368,7 @@ describe("importExport", () => {
 
 			const mockFileContent = JSON.stringify({
 				providerProfiles: { currentApiConfigName: "test", apiConfigs: {} },
-				globalSettings: { mode: "code", customModes },
+				globalSettings: { mode: "draft", customModes },
 			})
 
 			;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -401,7 +401,7 @@ describe("importExport", () => {
 					currentApiConfigName: "test",
 					apiConfigs: { test: { apiProvider: "openai" as ProviderName, apiKey: "test-key", id: "test-id" } },
 				},
-				globalSettings: { mode: "code", autoApprovalEnabled: true },
+				globalSettings: { mode: "draft", autoApprovalEnabled: true },
 			})
 
 			;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -417,7 +417,7 @@ describe("importExport", () => {
 				{ name: "test", id: "test-id", apiProvider: "openai" as ProviderName },
 				{ name: "default", id: "default-id", apiProvider: "anthropic" as ProviderName },
 			])
-			mockContextProxy.export.mockResolvedValue({ mode: "code" })
+			mockContextProxy.export.mockResolvedValue({ mode: "draft" })
 
 			const result = await importSettingsFromFile(
 				{
@@ -439,7 +439,7 @@ describe("importExport", () => {
 				},
 				modeApiConfigs: {},
 			})
-			expect(mockContextProxy.setValues).toHaveBeenCalledWith({ mode: "code", autoApprovalEnabled: true })
+			expect(mockContextProxy.setValues).toHaveBeenCalledWith({ mode: "draft", autoApprovalEnabled: true })
 		})
 
 		it("should return error when provided file path does not exist", async () => {
@@ -494,7 +494,7 @@ describe("importExport", () => {
 						},
 					},
 				},
-				globalSettings: { mode: "code", autoApprovalEnabled: true },
+				globalSettings: { mode: "draft", autoApprovalEnabled: true },
 			})
 
 			;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -510,7 +510,7 @@ describe("importExport", () => {
 				{ name: "default", id: "default-id", apiProvider: "anthropic" as ProviderName },
 			])
 
-			mockContextProxy.export.mockResolvedValue({ mode: "code" })
+			mockContextProxy.export.mockResolvedValue({ mode: "draft" })
 
 			const result = await importSettings({
 				providerSettingsManager: mockProviderSettingsManager,
@@ -536,7 +536,7 @@ describe("importExport", () => {
 				modeApiConfigs: {},
 			})
 
-			expect(mockContextProxy.setValues).toHaveBeenCalledWith({ mode: "code", autoApprovalEnabled: true })
+			expect(mockContextProxy.setValues).toHaveBeenCalledWith({ mode: "draft", autoApprovalEnabled: true })
 			expect(mockContextProxy.setValue).toHaveBeenCalledWith("currentApiConfigName", "openai-provider")
 		})
 
@@ -561,7 +561,7 @@ describe("importExport", () => {
 							},
 						},
 					},
-					globalSettings: { mode: "code" },
+					globalSettings: { mode: "draft" },
 				})
 
 				;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -621,7 +621,7 @@ describe("importExport", () => {
 							},
 						},
 					},
-					globalSettings: { mode: "code" },
+					globalSettings: { mode: "draft" },
 				})
 
 				;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -675,7 +675,7 @@ describe("importExport", () => {
 							},
 						},
 					},
-					globalSettings: { mode: "code" },
+					globalSettings: { mode: "draft" },
 				})
 
 				;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -717,7 +717,7 @@ describe("importExport", () => {
 							},
 						},
 					},
-					globalSettings: { mode: "code" },
+					globalSettings: { mode: "draft" },
 				})
 
 				;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -793,7 +793,7 @@ describe("importExport", () => {
 							},
 						},
 					},
-					globalSettings: { mode: "code" },
+					globalSettings: { mode: "draft" },
 				})
 
 				;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -859,7 +859,7 @@ describe("importExport", () => {
 							},
 						},
 					},
-					globalSettings: { mode: "code" },
+					globalSettings: { mode: "draft" },
 				})
 
 				;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -913,7 +913,7 @@ describe("importExport", () => {
 							},
 						},
 					},
-					globalSettings: { mode: "code" },
+					globalSettings: { mode: "draft" },
 				})
 
 				;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -957,7 +957,7 @@ describe("importExport", () => {
 							},
 						},
 					},
-					globalSettings: { mode: "code" },
+					globalSettings: { mode: "draft" },
 				})
 
 				;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -1019,7 +1019,7 @@ describe("importExport", () => {
 							},
 						},
 					},
-					globalSettings: { mode: "code" },
+					globalSettings: { mode: "draft" },
 				})
 
 				;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -1065,7 +1065,7 @@ describe("importExport", () => {
 							},
 						},
 					},
-					globalSettings: { mode: "code" },
+					globalSettings: { mode: "draft" },
 				})
 
 				;(fs.readFile as Mock).mockResolvedValue(mockFileContent)
@@ -1147,7 +1147,7 @@ describe("importExport", () => {
 			}
 
 			mockProviderSettingsManager.export.mockResolvedValue(mockProviderProfiles)
-			const mockGlobalSettings = { mode: "code", autoApprovalEnabled: true }
+			const mockGlobalSettings = { mode: "draft", autoApprovalEnabled: true }
 			mockContextProxy.export.mockResolvedValue(mockGlobalSettings)
 
 			await exportSettings({
@@ -1184,7 +1184,7 @@ describe("importExport", () => {
 			mockProviderSettingsManager.export.mockResolvedValue(mockProviderProfiles)
 
 			const mockGlobalSettings = {
-				mode: "code",
+				mode: "draft",
 				autoApprovalEnabled: true,
 				allowedMaxRequests: null,
 			}
@@ -1213,7 +1213,7 @@ describe("importExport", () => {
 				migrations: { rateLimitSecondsMigrated: false },
 			})
 
-			mockContextProxy.export.mockResolvedValue({ mode: "code" })
+			mockContextProxy.export.mockResolvedValue({ mode: "draft" })
 			// Simulate an error during the safeWriteJson operation
 			;(safeWriteJson as Mock).mockRejectedValueOnce(new Error("Safe write error"))
 
@@ -1243,7 +1243,7 @@ describe("importExport", () => {
 				migrations: { rateLimitSecondsMigrated: false },
 			})
 
-			mockContextProxy.export.mockResolvedValue({ mode: "code" })
+			mockContextProxy.export.mockResolvedValue({ mode: "draft" })
 			;(fs.mkdir as Mock).mockRejectedValue(new Error("Directory creation error"))
 
 			await exportSettings({
@@ -1298,7 +1298,7 @@ describe("importExport", () => {
 				}
 
 				const mockGlobalSettings = {
-					mode: "code",
+					mode: "draft",
 					codebaseIndexConfig: {
 						codebaseIndexEnabled: true,
 						codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -1343,7 +1343,7 @@ describe("importExport", () => {
 				}
 
 				const mockGlobalSettings = {
-					mode: "code",
+					mode: "draft",
 					codebaseIndexConfig: {
 						codebaseIndexEnabled: true,
 						codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -1399,7 +1399,7 @@ describe("importExport", () => {
 				}
 
 				const mockGlobalSettings = {
-					mode: "code",
+					mode: "draft",
 					codebaseIndexConfig: {
 						codebaseIndexEnabled: true,
 						codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -1450,7 +1450,7 @@ describe("importExport", () => {
 				}
 
 				const mockGlobalSettings = {
-					mode: "code",
+					mode: "draft",
 					codebaseIndexConfig: {
 						codebaseIndexEnabled: true,
 						codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -1496,7 +1496,7 @@ describe("importExport", () => {
 				}
 
 				const mockGlobalSettings = {
-					mode: "code",
+					mode: "draft",
 					codebaseIndexConfig: {
 						codebaseIndexEnabled: true,
 						codebaseIndexEmbedderProvider: "openai" as const, // Not openai-compatible
@@ -1538,7 +1538,7 @@ describe("importExport", () => {
 				}
 
 				const mockGlobalSettings = {
-					mode: "code",
+					mode: "draft",
 					codebaseIndexConfig: {
 						codebaseIndexEnabled: true,
 						codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -1586,7 +1586,7 @@ describe("importExport", () => {
 						modeApiConfigs: {},
 					},
 					globalSettings: {
-						mode: "code",
+						mode: "draft",
 						codebaseIndexConfig: {
 							codebaseIndexEnabled: true,
 							codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -1658,7 +1658,7 @@ describe("importExport", () => {
 						modeApiConfigs: {},
 					},
 					globalSettings: {
-						mode: "code",
+						mode: "draft",
 						codebaseIndexConfig: {
 							codebaseIndexEnabled: true,
 							codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -1709,7 +1709,7 @@ describe("importExport", () => {
 						modeApiConfigs: {},
 					},
 					globalSettings: {
-						mode: "code",
+						mode: "draft",
 						codebaseIndexConfig: {
 							codebaseIndexEnabled: true,
 							codebaseIndexEmbedderProvider: "openai" as const, // Not openai-compatible
@@ -1769,7 +1769,7 @@ describe("importExport", () => {
 			}
 
 			const mockGlobalSettings = {
-				mode: "code",
+				mode: "draft",
 				codebaseIndexConfig: {
 					codebaseIndexEnabled: true,
 					codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -1862,7 +1862,7 @@ describe("importExport", () => {
 			}
 
 			const mockGlobalSettings = {
-				mode: "code",
+				mode: "draft",
 				codebaseIndexConfig: {
 					codebaseIndexEnabled: true,
 					codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -1937,7 +1937,7 @@ describe("importExport", () => {
 			}
 
 			const mockGlobalSettings = {
-				mode: "code",
+				mode: "draft",
 				codebaseIndexConfig: {
 					codebaseIndexEnabled: true,
 					codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -2000,7 +2000,7 @@ describe("importExport", () => {
 					modeApiConfigs: {},
 				},
 				globalSettings: {
-					mode: "code",
+					mode: "draft",
 					codebaseIndexConfig: {
 						codebaseIndexEnabled: true,
 						codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -2078,7 +2078,7 @@ describe("importExport", () => {
 					modeApiConfigs: {},
 				},
 				globalSettings: {
-					mode: "code",
+					mode: "draft",
 					codebaseIndexConfig: {
 						codebaseIndexEnabled: true,
 						codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -2163,7 +2163,7 @@ describe("importExport", () => {
 					modeApiConfigs: {},
 				},
 				globalSettings: {
-					mode: "code",
+					mode: "draft",
 					codebaseIndexConfig: {
 						codebaseIndexEnabled: true,
 						codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -2253,7 +2253,7 @@ describe("importExport", () => {
 
 			// The global settings now include OpenAI Compatible settings directly in codebaseIndexConfig
 			const mockGlobalSettings = {
-				mode: "code",
+				mode: "draft",
 				codebaseIndexConfig: {
 					codebaseIndexEnabled: true,
 					codebaseIndexEmbedderProvider: "openai-compatible" as const,
@@ -2336,7 +2336,7 @@ describe("importExport", () => {
 				await realProviderSettingsManager.activateProfile({ name: providerName })
 
 				const mockGlobalSettings = {
-					mode: "code",
+					mode: "draft",
 					autoApprovalEnabled: true,
 				}
 

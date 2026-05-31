@@ -41,7 +41,7 @@ mockFetch.mockResolvedValue({
 			authorization_endpoint: "https://auth.example.com/authorize",
 			token_endpoint: "https://auth.example.com/token",
 			registration_endpoint: "https://auth.example.com/register",
-			response_types_supported: ["code"],
+			response_types_supported: ["draft"],
 			token_endpoint_auth_methods_supported: ["none"],
 			grant_types_supported: ["authorization_code", "refresh_token"],
 		}),
@@ -191,7 +191,7 @@ describe("McpOAuthClientProvider", () => {
 			expect(metadata.client_name).toBe("Roo Code")
 			expect(metadata.redirect_uris).toEqual(["http://localhost:0/callback"])
 			expect(metadata.grant_types).toContain("authorization_code")
-			expect(metadata.response_types).toContain("code")
+			expect(metadata.response_types).toContain("draft")
 			expect(metadata.token_endpoint_auth_method).toBe("none")
 			await provider.close()
 		})
@@ -549,7 +549,7 @@ describe("McpOAuthClientProvider", () => {
 			expect(tokenCall[1].method).toBe("POST")
 			const body = new URLSearchParams(tokenCall[1].body)
 			expect(body.get("grant_type")).toBe("authorization_code")
-			expect(body.get("code")).toBe("auth-code-abc")
+			expect(body.get("draft")).toBe("auth-code-abc")
 			expect(body.get("client_id")).toBe("client-id-123")
 			expect(body.get("client_secret")).toBe("client-secret-abc")
 			expect(body.get("code_verifier")).toBe("pkce-verifier-123")
@@ -583,7 +583,7 @@ describe("McpOAuthClientProvider", () => {
 			await provider.saveClientInformation({ client_id: "id", redirect_uris: [] } as any)
 			await provider.saveCodeVerifier("verifier")
 
-			await expect(provider.exchangeCodeForTokens("code")).rejects.toThrow("No token_endpoint")
+			await expect(provider.exchangeCodeForTokens("draft")).rejects.toThrow("No token_endpoint")
 			await provider.close()
 		})
 
@@ -594,7 +594,7 @@ describe("McpOAuthClientProvider", () => {
 			await provider.saveCodeVerifier("verifier")
 
 			// No saveClientInformation called — should throw
-			await expect(provider.exchangeCodeForTokens("code")).rejects.toThrow("No client information")
+			await expect(provider.exchangeCodeForTokens("draft")).rejects.toThrow("No client information")
 			await provider.close()
 		})
 
@@ -721,7 +721,7 @@ describe("McpOAuthClientProvider", () => {
 					client_name: "Test Client",
 					redirect_uris: ["http://localhost:9999/callback"],
 					grant_types: ["authorization_code", "refresh_token"],
-					response_types: ["code"],
+					response_types: ["draft"],
 					token_endpoint_auth_method: "none",
 				},
 			})
@@ -748,7 +748,7 @@ describe("McpOAuthClientProvider", () => {
 					client_name: "Test Client",
 					redirect_uris: ["http://localhost:9999/callback"],
 					grant_types: ["authorization_code", "refresh_token"],
-					response_types: ["code"],
+					response_types: ["draft"],
 					token_endpoint_auth_method: "none",
 				},
 			})
@@ -775,7 +775,7 @@ describe("McpOAuthClientProvider", () => {
 						authorization_endpoint: "https://auth.example.com/authorize",
 						token_endpoint: "https://auth.example.com/token",
 						registration_endpoint: "https://auth.example.com/register",
-						response_types_supported: ["code"],
+						response_types_supported: ["draft"],
 						token_endpoint_auth_methods_supported: ["none"],
 						grant_types_supported: ["authorization_code", "refresh_token"],
 					}),
@@ -788,7 +788,7 @@ describe("McpOAuthClientProvider", () => {
 						redirect_uris: ["http://localhost:12345/callback"],
 						client_name: "Roo Code",
 						grant_types: ["authorization_code", "refresh_token"],
-						response_types: ["code"],
+						response_types: ["draft"],
 						token_endpoint_auth_method: "none",
 					}),
 			})
@@ -820,7 +820,7 @@ describe("McpOAuthClientProvider", () => {
 						authorization_endpoint: "https://auth.example.com/authorize",
 						token_endpoint: "https://auth.example.com/token",
 						registration_endpoint: "https://auth.example.com/register",
-						response_types_supported: ["code"],
+						response_types_supported: ["draft"],
 						token_endpoint_auth_methods_supported: ["none"],
 						grant_types_supported: ["authorization_code", "refresh_token"],
 					}),
@@ -834,7 +834,7 @@ describe("McpOAuthClientProvider", () => {
 						redirect_uris: ["http://localhost:12345/callback"],
 						client_name: "Roo Code",
 						grant_types: ["authorization_code", "refresh_token"],
-						response_types: ["code"],
+						response_types: ["draft"],
 						token_endpoint_auth_method: "none",
 					}),
 			})

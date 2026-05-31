@@ -54,7 +54,7 @@ describe("ClineProvider.delegateParentAndOpenChild()", () => {
 			parentTaskId: "parent-1",
 			message: "Do something",
 			initialTodos: [],
-			mode: "code",
+			mode: "draft",
 		}
 
 		const child = await (ClineProvider.prototype as any).delegateParentAndOpenChild.call(provider, params)
@@ -92,7 +92,7 @@ describe("ClineProvider.delegateParentAndOpenChild()", () => {
 		expect(providerEmit).toHaveBeenCalledWith(RooCodeEventName.TaskDelegated, "parent-1", "child-1")
 
 		// Mode switch
-		expect(handleModeSwitch).toHaveBeenCalledWith("code")
+		expect(handleModeSwitch).toHaveBeenCalledWith("draft")
 	})
 
 	it("calls child.start() only after parent metadata is persisted (no race condition)", async () => {
@@ -136,7 +136,7 @@ describe("ClineProvider.delegateParentAndOpenChild()", () => {
 			parentTaskId: "parent-1",
 			message: "Do something",
 			initialTodos: [],
-			mode: "code",
+			mode: "draft",
 		})
 
 		// Verify ordering: createTask → updateTaskHistory → child.start

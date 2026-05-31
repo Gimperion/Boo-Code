@@ -8,6 +8,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## 3.58.0
+
+### Changed
+
+- **Writing Modes:** Completely redesigned mode system for long-form writing workflows
+    - Replaced developer modes (Architect, Code, Ask, Debug, Orchestrator) with five writing-focused modes
+    - New modes: **Interview** (persistent entry point, now default), **Outline** (planning/structure), **Draft** (prose execution), **Revise** (editing/refinement), **Develop** (knowledge base expansion)
+    - Each mode has task-specific tool access, role definitions, and custom instructions
+    - Interview is the hub; users manually switch to specialist modes for focused work
+    - Tool access aligned with workflow: Interview reads all/writes to `.boo/` and `knowledge/`; Draft reads plan + style, writes `main.md`; Revise reads broadly, edits `main.md`; Develop expands `knowledge/` files; Outline reads broadly, writes plan docs
+
+---
+
 ## 3.57.1
 
 ### Added

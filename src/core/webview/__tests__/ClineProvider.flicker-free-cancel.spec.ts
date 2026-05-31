@@ -143,7 +143,7 @@ describe("ClineProvider flicker-free cancel", () => {
 		// Mock provider methods
 		provider.getState = vi.fn().mockResolvedValue({
 			apiConfiguration: mockApiConfig,
-			mode: "code",
+			mode: "draft",
 		})
 
 		provider.postStateToWebview = vi.fn().mockResolvedValue(undefined)

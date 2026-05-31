@@ -164,7 +164,7 @@ describe("Task grounding sources handling", () => {
 			postStateToWebview: vi.fn().mockResolvedValue(undefined),
 			postStateToWebviewWithoutTaskHistory: vi.fn().mockResolvedValue(undefined),
 			getState: vi.fn().mockResolvedValue({
-				mode: "code",
+				mode: "draft",
 				experiments: {},
 			}),
 			context: {

@@ -209,7 +209,7 @@ describe("custom-instructions global .roo support", () => {
 
 	describe("addCustomInstructions mode-specific rules", () => {
 		it("should load global and project mode-specific rules", async () => {
-			const mode = "code"
+			const mode = "draft"
 
 			// Mock directory existence for mode-specific rules
 			mockStat
@@ -255,7 +255,7 @@ describe("custom-instructions global .roo support", () => {
 		})
 
 		it("should fall back to legacy mode-specific files when no mode directories exist", async () => {
-			const mode = "code"
+			const mode = "draft"
 
 			// Mock directory existence - mode-specific dirs don't exist
 			mockStat

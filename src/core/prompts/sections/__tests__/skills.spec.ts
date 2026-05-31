@@ -13,7 +13,7 @@ describe("getSkillsSection", () => {
 			]),
 		}
 
-		const result = await getSkillsSection(mockSkillsManager, "code")
+		const result = await getSkillsSection(mockSkillsManager, "draft")
 
 		expect(result).toContain("<available_skills>")
 		expect(result).toContain("</available_skills>")
@@ -26,7 +26,7 @@ describe("getSkillsSection", () => {
 	})
 
 	it("should return empty string when skillsManager or currentMode is missing", async () => {
-		await expect(getSkillsSection(undefined, "code")).resolves.toBe("")
+		await expect(getSkillsSection(undefined, "draft")).resolves.toBe("")
 		await expect(getSkillsSection({ getSkillsForMode: vi.fn() }, undefined)).resolves.toBe("")
 	})
 })
