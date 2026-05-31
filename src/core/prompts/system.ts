@@ -55,6 +55,7 @@ async function generatePrompt(
 	todoList?: TodoItem[],
 	modelId?: string,
 	skillsManager?: SkillsManager,
+	currentFilePath?: string,
 ): Promise<string> {
 	if (!context) {
 		throw new Error("Extension context is required for generating system prompt")
@@ -106,7 +107,18 @@ ${await addCustomInstructions(baseInstructions, globalCustomInstructions || "", 
 	settings,
 })}`
 
-	return basePrompt
+	// Load boo context if enabled and file path is available
+	let booContextBlock = ""
+	if (settings?.useBooContext !== false && currentFilePath) {
+		try {
+			const { loadBooContext } = await import("../context-loading/context-loader")
+			booContextBlock = await loadBooContext(cwd, currentFilePath, mode as string)
+		} catch (err) {
+			// Silently ignore errors loading boo context
+		}
+	}
+
+	return basePrompt + (booContextBlock ? `\n${booContextBlock}` : "")
 }
 
 export const SYSTEM_PROMPT = async (
@@ -126,6 +138,7 @@ export const SYSTEM_PROMPT = async (
 	todoList?: TodoItem[],
 	modelId?: string,
 	skillsManager?: SkillsManager,
+	currentFilePath?: string,
 ): Promise<string> => {
 	if (!context) {
 		throw new Error("Extension context is required for generating system prompt")
@@ -154,5 +167,6 @@ export const SYSTEM_PROMPT = async (
 		todoList,
 		modelId,
 		skillsManager,
+		currentFilePath,
 	)
 }
