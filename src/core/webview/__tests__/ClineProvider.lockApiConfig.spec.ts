@@ -140,8 +140,8 @@ vi.mock("../../../shared/modes", () => {
 			groups: ["read", "edit"],
 		},
 		{
-			slug: "develop",
-			name: "Develop Mode",
+			slug: "update",
+			name: "Update Mode",
 			roleDefinition: "You are a world builder",
 			groups: ["read", "edit", "command", "mcp"],
 		},

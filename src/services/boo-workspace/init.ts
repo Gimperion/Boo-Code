@@ -62,6 +62,24 @@ export async function initWorkspace(workspaceRoot: string, generateDescription: 
 		`---\nbackend: markdown\nindexed: false\n---\n\n## Knowledge Base\n\nDescribe what this knowledge base covers.\n`,
 	)
 
+	await writeIfAbsent(
+		path.join(workspaceRoot, "knowledge", "glossary.md"),
+		`# Glossary
+
+Add characters, settings, concepts here as you develop them.
+Use format: \`name (@tag:value)\`
+
+## Characters
+- (empty, add as you go)
+
+## Settings
+- (empty, add as you go)
+
+## Concepts
+- (empty, add as you go)
+`,
+	)
+
 	const manifestPath = path.join(workspaceRoot, "workspace.boo.md")
 	if (!(await fileExists(manifestPath))) {
 		const author = await inferAuthor()

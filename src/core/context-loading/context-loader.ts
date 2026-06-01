@@ -104,39 +104,12 @@ async function loadComponentContext(
 }
 
 /**
- * Load knowledge files (flat markdown, all files in knowledge/ directory)
+ * Load knowledge glossary only (not all knowledge files)
  */
 async function loadKnowledgeContext(cwd: string, booIgnorePatterns: string[]): Promise<string> {
-	const knowledgeDir = path.join(cwd, "knowledge")
-	if (!(await directoryExists(knowledgeDir))) {
-		return ""
-	}
-
-	try {
-		const entries = await fs.readdir(knowledgeDir, { withFileTypes: true, recursive: true })
-		const files = entries
-			.filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
-			.sort((a, b) => (a.parentPath || "").localeCompare(b.parentPath || ""))
-
-		const contents: string[] = []
-		for (const file of files) {
-			const filePath = path.join(file.parentPath || knowledgeDir, file.name)
-			const relPath = path.relative(cwd, filePath)
-
-			if (shouldIgnoreFile(relPath, booIgnorePatterns)) {
-				continue
-			}
-
-			const content = await readFileIfExists(filePath)
-			if (content) {
-				contents.push(content)
-			}
-		}
-
-		return contents.join("\n\n")
-	} catch (err) {
-		return ""
-	}
+	const glossaryPath = path.join(cwd, "knowledge", "glossary.md")
+	const glossaryContent = await readFileIfExists(glossaryPath)
+	return glossaryContent || ""
 }
 
 /**

@@ -20,7 +20,7 @@ const mockExtensionState = {
 	],
 	enhancementApiConfigId: "",
 	setEnhancementApiConfigId: vitest.fn(),
-	mode: "code",
+	mode: "interview",
 	customModes: [],
 	customSupportPrompts: [],
 	currentApiConfigName: "",
@@ -44,9 +44,9 @@ describe("PromptsView", () => {
 	})
 
 	it("displays the current mode name in the select trigger", () => {
-		renderPromptsView({ mode: "code" })
+		renderPromptsView({ mode: "interview" })
 		const selectTrigger = screen.getByTestId("mode-select-trigger")
-		expect(selectTrigger).toHaveTextContent("Code")
+		expect(selectTrigger).toHaveTextContent("Interview")
 	})
 
 	it("opens the mode selection popover when the trigger is clicked", async () => {
@@ -64,12 +64,12 @@ describe("PromptsView", () => {
 		fireEvent.click(selectTrigger)
 
 		const searchInput = screen.getByTestId("mode-search-input")
-		fireEvent.change(searchInput, { target: { value: "ask" } })
+		fireEvent.change(searchInput, { target: { value: "draft" } })
 
 		await waitFor(() => {
-			expect(screen.getByTestId("mode-option-ask")).toBeInTheDocument()
-			expect(screen.queryByTestId("mode-option-code")).not.toBeInTheDocument()
-			expect(screen.queryByTestId("mode-option-architect")).not.toBeInTheDocument()
+			expect(screen.getByTestId("mode-option-draft")).toBeInTheDocument()
+			expect(screen.queryByTestId("mode-option-interview")).not.toBeInTheDocument()
+			expect(screen.queryByTestId("mode-option-outline")).not.toBeInTheDocument()
 		})
 	})
 
@@ -78,13 +78,13 @@ describe("PromptsView", () => {
 		const selectTrigger = screen.getByTestId("mode-select-trigger")
 		fireEvent.click(selectTrigger)
 
-		const askOption = await waitFor(() => screen.getByTestId("mode-option-ask"))
-		fireEvent.click(askOption)
+		const draftOption = await waitFor(() => screen.getByTestId("mode-option-draft"))
+		fireEvent.click(draftOption)
 
 		expect(mockExtensionState.setEnhancementApiConfigId).not.toHaveBeenCalled() // Ensure this is not called by mode switch
 		expect(vscode.postMessage).toHaveBeenCalledWith({
 			type: "mode",
-			text: "ask",
+			text: "draft",
 		})
 		await waitFor(() => {
 			expect(selectTrigger).toHaveAttribute("aria-expanded", "false")
@@ -95,7 +95,7 @@ describe("PromptsView", () => {
 		renderPromptsView()
 
 		// Get the textarea
-		const textarea = await waitFor(() => screen.getByTestId("code-prompt-textarea"))
+		const textarea = await waitFor(() => screen.getByTestId("interview-prompt-textarea"))
 
 		// Simulate VSCode TextArea change event
 		const changeEvent = new CustomEvent("change", {
@@ -110,7 +110,7 @@ describe("PromptsView", () => {
 
 		expect(vscode.postMessage).toHaveBeenCalledWith({
 			type: "updatePrompt",
-			promptMode: "code",
+			promptMode: "interview",
 			customPrompt: { roleDefinition: "New prompt value" },
 		})
 	})
@@ -123,10 +123,10 @@ describe("PromptsView", () => {
 			groups: [],
 		}
 
-		// Test with built-in mode (code)
+		// Test with built-in mode (interview)
 		const { unmount } = render(
 			<ExtensionStateContext.Provider
-				value={{ ...mockExtensionState, mode: "code", customModes: [customMode] } as any}>
+				value={{ ...mockExtensionState, mode: "interview", customModes: [customMode] } as any}>
 				<ModesView />
 			</ExtensionStateContext.Provider>,
 		)
@@ -142,7 +142,7 @@ describe("PromptsView", () => {
 		// This allows the default role definition from the built-in mode to be used instead.
 		expect(vscode.postMessage).toHaveBeenCalledWith({
 			type: "updatePrompt",
-			promptMode: "code",
+			promptMode: "interview",
 			customPrompt: {}, // Empty object because the role definition field is removed entirely
 		})
 
@@ -170,10 +170,10 @@ describe("PromptsView", () => {
 			groups: [],
 		}
 
-		// Test with built-in mode (code) - description section should be shown with reset button
+		// Test with built-in mode (interview) - description section should be shown with reset button
 		const { unmount } = render(
 			<ExtensionStateContext.Provider
-				value={{ ...mockExtensionState, mode: "code", customModes: [customMode] } as any}>
+				value={{ ...mockExtensionState, mode: "interview", customModes: [customMode] } as any}>
 				<ModesView />
 			</ExtensionStateContext.Provider>,
 		)

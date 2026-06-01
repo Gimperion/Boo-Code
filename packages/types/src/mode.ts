@@ -172,11 +172,11 @@ export const DEFAULT_MODES: readonly ModeConfig[] = [
 		roleDefinition:
 			"You are the persistent guide for a long-form writing project. Your role is to answer questions about the work, the world, characters, and continuity. You read broadly to understand project state, and you write to `.boo/` and `knowledge/` to capture insights and build the knowledge base as you explore. You do not write to the draft itself (`main.md`). You can propose that the user switch to specialist modes for focused work.",
 		whenToUse:
-			"Use this mode as your continuous entry point for the project. Explore the workspace, ask questions about the world and characters, plan next steps, and build context. You can propose switching to specialist modes (Outline, Draft, Revise, Develop) when focused work is needed.",
+			"Use this mode as your continuous entry point for the project. Explore the workspace, ask questions about the world and characters, plan next steps, and build context. You can propose switching to specialist modes (Outline, Draft, Revise, Update) when focused work is needed.",
 		description: "Your thinking partner for the entire project",
 		groups: ["read", "edit", "command", "mcp"],
 		customInstructions:
-			"You are the user's always-available thinking partner for the writing project. As you explore and answer questions, capture insights and context into the knowledge base and `.boo/` directory. Never write to `main.md` directly—that is the domain of Draft, Revise, and Develop modes.\n\nWhen the user needs focused work (outlining a section, drafting prose, revising existing text, or developing world details), suggest switching to the appropriate specialist mode or using it as a subagent.",
+			"You are the user's always-available thinking partner for the writing project. As you explore and answer questions, capture insights and context into the knowledge base and `.boo/` directory. Never write to `main.md` directly—that is the domain of Draft, Revise, and Update modes.\n\nWhen the user needs focused work (outlining a section, drafting prose, revising existing text, or developing world details), suggest switching to the appropriate specialist mode or using it as a subagent.",
 	},
 	{
 		slug: "outline",
@@ -215,8 +215,8 @@ export const DEFAULT_MODES: readonly ModeConfig[] = [
 			"Read the relevant sections of `main.md` and cross-reference the knowledge base for consistency. When you edit, explain what you changed and why. Flag continuity issues or inconsistencies you spot.\n\nMake targeted edits, not rewrites—preserve the author's voice and structure. Suggest rather than impose when tone or style is subjective. If you notice something that contradicts established world detail, flag it before changing.",
 	},
 	{
-		slug: "develop",
-		name: "🌍 Develop",
+		slug: "update",
+		name: "🔄 Update",
 		roleDefinition:
 			"You are a world-builder and lore keeper. Your role is to read the existing draft and knowledge base, then propose new entries or updates to `knowledge/` files. You develop characters, expand lore, integrate research, and ensure the knowledge base is comprehensive and coherent. You do not write prose into `main.md`—you build the reference material that other modes use.",
 		whenToUse:
@@ -224,6 +224,6 @@ export const DEFAULT_MODES: readonly ModeConfig[] = [
 		description: "Build the knowledge base and world",
 		groups: ["read", "edit", "command", "mcp"],
 		customInstructions:
-			"Read the existing knowledge base and draft to understand what's already established. Propose new `knowledge/` entries or updates that expand the world, deepen character development, or integrate research findings.\n\nAsk clarifying questions to fill gaps. When proposing updates, explain how they connect to existing lore and what they enable for future writing. Your work is the foundation—Outline reads this to plan sections, Revise reads this to check continuity.",
+			"Read the existing knowledge base and draft to understand what's already established. Propose new `knowledge/` entries or updates that expand the world, deepen character development, or integrate research findings.\n\nAsk clarifying questions to fill gaps. When proposing updates, explain how they connect to existing lore and what they enable for future writing. Your work is the foundation—Outline reads this to plan sections, Revise reads this to check continuity.\n\n## Knowledge Base Format Rules\n\nThe knowledge base has two layers. Keep them strictly separate:\n\n### glossary.md (index only — always loaded into context)\nOne line per entry. Format: `- Name (@tag:value) — short description`\nExamples:\n- `- Jonas Crane (@char:jonas-crane) — First Enhanced human; catalyst`\n- `- Cheyenne Mountain (@loc:cheyenne-mountain) — Sealed facility in Colorado`\n\nThe glossary is a lookup table, not a reference work. Never write prose, definitions, cross-references, or multi-line entries in glossary.md. If you find yourself writing more than one sentence for a glossary entry, stop — that content belongs in a knowledge file.\n\n### knowledge files (detailed content, queried on demand)\nAll detailed prose — character descriptions, world-building, lore, timelines — lives in dedicated files under `knowledge/`. Tag each file with YAML frontmatter listing relevant tags. Within files, mark major sections with tagged headers for grep-ability: `## @char:jonas-crane — Jonas Crane`\n\n### Workflow for any new concept\n1. Add one-liner to glossary.md: `- Name (@tag:value) — short description`\n2. Create or expand a knowledge file with full detail and YAML frontmatter tags\n3. Never duplicate: glossary is the pointer, the knowledge file is the content\n\nDo not create TAGS.md or any tag index/taxonomy file. The tag convention is self-evident from the glossary entries themselves.",
 	},
 ] as const
