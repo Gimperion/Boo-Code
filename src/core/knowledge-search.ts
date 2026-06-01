@@ -1,4 +1,4 @@
-import { execSync } from "child_process"
+import { execFileSync } from "child_process"
 import path from "path"
 import { readFileIfExists } from "../services/boo-config"
 
@@ -56,21 +56,14 @@ export async function searchKnowledge(cwd: string, query: string): Promise<Searc
 		return entry.tag.includes(query) || entry.name.toLowerCase().includes(query.toLowerCase())
 	})
 
-	// Build grep pattern
-	let grepPattern: string
-	if (query.startsWith("@")) {
-		// Exact tag search: "@char:Elena" -> grep for "@char:Elena"
-		grepPattern = query
-	} else {
-		// Keyword search: "Elena" -> grep case-insensitive
-		grepPattern = query
-	}
-
 	// Search files via grep
 	const fileMatches: SearchResult["fileMatches"] = []
 	try {
-		const grepCmd = `grep -r -i -n "${grepPattern.replace(/"/g, '\\"')}" "${knowledgeDir}" --include="*.md" | grep -v "glossary.md"`
-		const output = execSync(grepCmd, { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] })
+		const output = execFileSync(
+			"grep",
+			["-r", "-i", "-n", query, knowledgeDir, "--include=*.md", "--exclude=glossary.md"],
+			{ encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] },
+		)
 
 		for (const line of output.split("\n")) {
 			if (!line.trim()) continue
@@ -93,6 +86,6 @@ export async function searchKnowledge(cwd: string, query: string): Promise<Searc
 	return {
 		glossaryMatches,
 		fileMatches,
-		searchQuery: `grep -r -i -n "${grepPattern}" "${knowledgeDir}" --include="*.md"`,
+		searchQuery: `grep -r -i -n ${JSON.stringify(query)} ${JSON.stringify(knowledgeDir)} --include=*.md`,
 	}
 }
