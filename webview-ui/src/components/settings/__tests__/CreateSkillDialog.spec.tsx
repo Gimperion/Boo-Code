@@ -478,7 +478,7 @@ describe("CreateSkillDialog", () => {
 				skillName: "my-skill",
 				source: "project",
 				skillDescription: "My skill description",
-				skillModeSlugs: ["code", "architect"],
+				skillModeSlugs: ["draft", "outline"],
 			})
 		})
 	})
