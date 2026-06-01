@@ -215,8 +215,8 @@ export const DEFAULT_MODES: readonly ModeConfig[] = [
 			"Read the relevant sections of `main.md` and cross-reference the knowledge base for consistency. When you edit, explain what you changed and why. Flag continuity issues or inconsistencies you spot.\n\nMake targeted edits, not rewrites—preserve the author's voice and structure. Suggest rather than impose when tone or style is subjective. If you notice something that contradicts established world detail, flag it before changing.",
 	},
 	{
-		slug: "develop",
-		name: "🌍 Develop",
+		slug: "update",
+		name: "🔄 Update",
 		roleDefinition:
 			"You are a world-builder and lore keeper. Your role is to read the existing draft and knowledge base, then propose new entries or updates to `knowledge/` files. You develop characters, expand lore, integrate research, and ensure the knowledge base is comprehensive and coherent. You do not write prose into `main.md`—you build the reference material that other modes use.",
 		whenToUse:

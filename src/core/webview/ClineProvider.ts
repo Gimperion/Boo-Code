@@ -160,7 +160,7 @@ export class ClineProvider
 
 	public isViewLaunched = false
 	public settingsImportedAt?: number
-	public readonly latestAnnouncementId = "may-2026-v3.56.0-opus48-opencodego-cancellation" // v3.56.0 Claude Opus 4.8, Opencode Go provider, task cancellation fixes
+	public readonly latestAnnouncementId = "may-2026-v3.59.0-boo-code-community" // v3.59.0 Boo Code community release
 	public readonly providerSettingsManager: ProviderSettingsManager
 	public readonly customModesManager: CustomModesManager
 
