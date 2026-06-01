@@ -289,6 +289,7 @@ export const TOOL_DISPLAY_NAMES: Record<ToolName, string> = {
 	run_slash_command: "run slash command",
 	skill: "load skill",
 	generate_image: "generate images",
+	knowledge_search: "search knowledge base",
 	custom_tool: "use custom tools",
 } as const
 
