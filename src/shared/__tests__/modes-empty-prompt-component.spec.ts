@@ -4,27 +4,27 @@ import { getModeSelection, modes } from "../modes"
 
 describe("getModeSelection with empty promptComponent", () => {
 	it("should use built-in mode instructions when promptComponent is undefined", () => {
-		const architectMode = modes.find((m) => m.slug === "outline")!
+		const outlineMode = modes.find((m) => m.slug === "outline")!
 
 		// Test with undefined promptComponent (which is what getPromptComponent returns for empty objects)
 		const result = getModeSelection("outline", undefined, [])
 
 		// Should use built-in mode values
-		expect(result.roleDefinition).toBe(architectMode.roleDefinition)
-		expect(result.baseInstructions).toBe(architectMode.customInstructions)
-		expect(result.baseInstructions).toContain("Do some information gathering")
+		expect(result.roleDefinition).toBe(outlineMode.roleDefinition)
+		expect(result.baseInstructions).toBe(outlineMode.customInstructions)
+		expect(result.baseInstructions).toContain("knowledge/")
 	})
 
 	it("should use built-in mode instructions when promptComponent is null", () => {
-		const debugMode = modes.find((m) => m.slug === "revise")!
+		const reviseMode = modes.find((m) => m.slug === "revise")!
 
 		// Test with null promptComponent
 		const result = getModeSelection("revise", null as any, [])
 
 		// Should use built-in mode values
-		expect(result.roleDefinition).toBe(debugMode.roleDefinition)
-		expect(result.baseInstructions).toBe(debugMode.customInstructions)
-		expect(result.baseInstructions).toContain("Reflect on 5-7 different possible sources")
+		expect(result.roleDefinition).toBe(reviseMode.roleDefinition)
+		expect(result.baseInstructions).toBe(reviseMode.customInstructions)
+		expect(result.baseInstructions).toContain("targeted edits")
 	})
 
 	it("should use promptComponent when it has actual content", () => {

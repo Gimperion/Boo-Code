@@ -205,8 +205,8 @@ describe("isToolAllowedForMode", () => {
 			).toBe(true)
 		})
 
-		it("allows architect mode to edit markdown files only", () => {
-			// Should allow editing markdown files
+		it("allows outline mode to edit any file (no file restriction)", () => {
+			// outline mode has unrestricted edit access — it writes plan docs of any name
 			expect(
 				isToolAllowedForMode("write_to_file", "outline", [], undefined, {
 					path: "test.md",
@@ -214,7 +214,6 @@ describe("isToolAllowedForMode", () => {
 				}),
 			).toBe(true)
 
-			// Should allow applying diffs to markdown files
 			expect(
 				isToolAllowedForMode("apply_diff", "outline", [], undefined, {
 					path: "readme.md",
@@ -222,29 +221,23 @@ describe("isToolAllowedForMode", () => {
 				}),
 			).toBe(true)
 
-			// Should reject non-markdown files
-			expect(() =>
+			// Non-markdown files are also allowed
+			expect(
 				isToolAllowedForMode("write_to_file", "outline", [], undefined, {
 					path: "test.js",
 					content: "console.log('test')",
 				}),
-			).toThrow(FileRestrictionError)
-			expect(() =>
-				isToolAllowedForMode("write_to_file", "outline", [], undefined, {
-					path: "test.js",
-					content: "console.log('test')",
-				}),
-			).toThrow(/Markdown files only/)
+			).toBe(true)
 
-			// Should maintain read capabilities
+			// Should maintain read and mcp capabilities
 			expect(isToolAllowedForMode("read_file", "outline", [])).toBe(true)
 			expect(isToolAllowedForMode("use_mcp_tool", "outline", [])).toBe(true)
 		})
 
 		it("applies restrictions to apply_diff", () => {
 			// Native-only: file restrictions for apply_diff are enforced against the top-level `path`.
+			// outline mode has no file restriction, so all files are allowed.
 
-			// Should allow markdown files in architect mode
 			expect(
 				isToolAllowedForMode("apply_diff", "outline", [], undefined, {
 					path: "test.md",
@@ -252,19 +245,12 @@ describe("isToolAllowedForMode", () => {
 				}),
 			).toBe(true)
 
-			// Non-markdown file should throw
-			expect(() =>
+			expect(
 				isToolAllowedForMode("apply_diff", "outline", [], undefined, {
 					path: "test.py",
 					diff: "- old content\n+ new content",
 				}),
-			).toThrow(FileRestrictionError)
-			expect(() =>
-				isToolAllowedForMode("apply_diff", "outline", [], undefined, {
-					path: "test.py",
-					diff: "- old content\n+ new content",
-				}),
-			).toThrow(/Markdown files only/)
+			).toBe(true)
 		})
 
 		it("applies restrictions to apply_patch (custom tool)", () => {
@@ -412,9 +398,9 @@ describe("isToolAllowedForMode", () => {
 			).toThrow(/\\.md\$/)
 		})
 
-		it("applies restrictions to all editing tools in architect mode (custom tools)", () => {
-			// Test apply_patch in architect mode
-			// Note: apply_patch only accepts { patch: string } - file paths are embedded in patch content
+		it("outline mode allows all editing tools without file restriction (custom tools)", () => {
+			// outline mode has no fileRegex restriction — all file types are allowed
+
 			expect(
 				isToolAllowedForMode(
 					"apply_patch",
@@ -425,11 +411,11 @@ describe("isToolAllowedForMode", () => {
 						patch: "*** Begin Patch\n*** Update File: test.md\n@@ \n-old\n+new\n*** End Patch",
 					},
 					undefined,
-					["apply_patch"], // Include custom tool
+					["apply_patch"],
 				),
 			).toBe(true)
 
-			expect(() =>
+			expect(
 				isToolAllowedForMode(
 					"apply_patch",
 					"outline",
@@ -439,11 +425,10 @@ describe("isToolAllowedForMode", () => {
 						patch: "*** Begin Patch\n*** Update File: test.js\n@@ \n-old\n+new\n*** End Patch",
 					},
 					undefined,
-					["apply_patch"], // Include custom tool
+					["apply_patch"],
 				),
-			).toThrow(FileRestrictionError)
+			).toBe(true)
 
-			// Test search_replace in architect mode
 			expect(
 				isToolAllowedForMode(
 					"search_replace",
@@ -456,11 +441,11 @@ describe("isToolAllowedForMode", () => {
 						new_string: "new text",
 					},
 					undefined,
-					["search_replace"], // Include custom tool
+					["search_replace"],
 				),
 			).toBe(true)
 
-			expect(() =>
+			expect(
 				isToolAllowedForMode(
 					"search_replace",
 					"outline",
@@ -472,11 +457,10 @@ describe("isToolAllowedForMode", () => {
 						new_string: "new text",
 					},
 					undefined,
-					["search_replace"], // Include custom tool
+					["search_replace"],
 				),
-			).toThrow(FileRestrictionError)
+			).toBe(true)
 
-			// Test edit_file in architect mode
 			expect(
 				isToolAllowedForMode(
 					"edit_file",
@@ -489,11 +473,11 @@ describe("isToolAllowedForMode", () => {
 						new_string: "new text",
 					},
 					undefined,
-					["edit_file"], // Include custom tool
+					["edit_file"],
 				),
 			).toBe(true)
 
-			expect(() =>
+			expect(
 				isToolAllowedForMode(
 					"edit_file",
 					"outline",
@@ -505,9 +489,9 @@ describe("isToolAllowedForMode", () => {
 						new_string: "new text",
 					},
 					undefined,
-					["edit_file"], // Include custom tool
+					["edit_file"],
 				),
-			).toThrow(FileRestrictionError)
+			).toBe(true)
 		})
 	})
 
@@ -604,20 +588,17 @@ describe("FileRestrictionError", () => {
 		expect(error.name).toBe("FileRestrictionError")
 	})
 
-	describe("debug mode", () => {
+	describe("revise mode", () => {
 		it("is configured correctly", () => {
-			const debugMode = modes.find((mode) => mode.slug === "revise")
-			expect(debugMode).toBeDefined()
-			expect(debugMode).toMatchObject({
+			const reviseMode = modes.find((mode) => mode.slug === "revise")
+			expect(reviseMode).toBeDefined()
+			expect(reviseMode).toMatchObject({
 				slug: "revise",
-				name: "🪲 Debug",
-				roleDefinition:
-					"You are Zoo, an expert software debugger specializing in systematic problem diagnosis and resolution.",
-				groups: ["read", "edit", "command", "mcp"],
+				name: "✏️ Revise",
+				groups: ["read", "edit"],
 			})
-			expect(debugMode?.customInstructions).toContain(
-				"Reflect on 5-7 different possible sources of the problem, distill those down to 1-2 most likely sources, and then add logs to validate your assumptions. Explicitly ask the user to confirm the diagnosis before fixing the problem.",
-			)
+			expect(reviseMode?.roleDefinition).toContain("meticulous editor")
+			expect(reviseMode?.customInstructions).toContain("targeted edits")
 		})
 	})
 
@@ -631,10 +612,10 @@ describe("FileRestrictionError", () => {
 			const result = await getFullModeDetails("revise")
 			expect(result).toMatchObject({
 				slug: "revise",
-				name: "🪲 Debug",
-				roleDefinition:
-					"You are Zoo, an expert software debugger specializing in systematic problem diagnosis and resolution.",
+				name: "✏️ Revise",
+				groups: ["read", "edit"],
 			})
+			expect(result.roleDefinition).toContain("meticulous editor")
 		})
 
 		it("applies custom mode overrides", async () => {
@@ -658,7 +639,7 @@ describe("FileRestrictionError", () => {
 
 		it("applies prompt component overrides", async () => {
 			const customModePrompts = {
-				debug: {
+				revise: {
 					roleDefinition: "Overridden role",
 					customInstructions: "Overridden instructions",
 				},
@@ -716,6 +697,125 @@ describe("FileRestrictionError", () => {
 			"Tool 'apply_diff' in mode 'Markdown Editor' can only edit files matching pattern: \\.md$ (Markdown files only). Got: test.js",
 		)
 		expect(error.name).toBe("FileRestrictionError")
+	})
+})
+
+describe("collaborate mode", () => {
+	it("is defined in DEFAULT_MODES", () => {
+		const collaborateMode = modes.find((m) => m.slug === "collaborate")
+		expect(collaborateMode).toBeDefined()
+	})
+
+	it("has correct slug, name, and groups", () => {
+		const collaborateMode = modes.find((m) => m.slug === "collaborate")!
+		expect(collaborateMode.slug).toBe("collaborate")
+		expect(collaborateMode.name).toBe("🤝 Collaborate")
+		expect(collaborateMode.groups).toEqual([
+			"read",
+			["edit", { fileRegex: expect.any(String), description: expect.any(String) }],
+		])
+	})
+
+	it("appears after outline and before draft in the mode list", () => {
+		const slugs = modes.map((m) => m.slug)
+		const outlineIdx = slugs.indexOf("outline")
+		const collaborateIdx = slugs.indexOf("collaborate")
+		const draftIdx = slugs.indexOf("draft")
+		expect(collaborateIdx).toBeGreaterThan(outlineIdx)
+		expect(collaborateIdx).toBeLessThan(draftIdx)
+	})
+
+	it("restricts writes to main.md, plans/plan-collaborate-*, and notes/", () => {
+		const collaborateMode = modes.find((m) => m.slug === "collaborate")!
+		const editGroup = collaborateMode.groups.find((g) => Array.isArray(g) && g[0] === "edit") as [
+			string,
+			{ fileRegex: string },
+		]
+		expect(editGroup).toBeDefined()
+		const regex = new RegExp(editGroup[1].fileRegex)
+		expect(regex.test("components/01-chapter/main.md")).toBe(true)
+		expect(regex.test("components/01-chapter/plans/plan-collaborate-1.md")).toBe(true)
+		expect(regex.test("components/01-chapter/notes/collaborate-handoff.md")).toBe(true)
+		expect(regex.test("knowledge/glossary.md")).toBe(false)
+		expect(regex.test(".boo/style.md")).toBe(false)
+		expect(regex.test("workspace.boo.md")).toBe(false)
+	})
+
+	it("has roleDefinition and customInstructions", () => {
+		const collaborateMode = modes.find((m) => m.slug === "collaborate")!
+		expect(collaborateMode.roleDefinition).toBeTruthy()
+		expect(collaborateMode.customInstructions).toBeTruthy()
+	})
+
+	it("customInstructions mention intake, orient, and session-end", () => {
+		const collaborateMode = modes.find((m) => m.slug === "collaborate")!
+		const instructions = (collaborateMode.customInstructions ?? "").toLowerCase()
+		expect(instructions).toContain("intake")
+		expect(instructions).toContain("orient")
+		expect(instructions).toContain("session end")
+	})
+
+	it("allows writing to component main.md", () => {
+		expect(
+			isToolAllowedForMode("write_to_file", "collaborate", [], undefined, {
+				path: "components/01-chapter/main.md",
+				content: "Some prose",
+			}),
+		).toBe(true)
+	})
+
+	it("allows writing to plan-collaborate files", () => {
+		expect(
+			isToolAllowedForMode("write_to_file", "collaborate", [], undefined, {
+				path: "components/01-chapter/plans/plan-collaborate-1.md",
+				content: "## Beats",
+			}),
+		).toBe(true)
+	})
+
+	it("allows writing to component notes/", () => {
+		expect(
+			isToolAllowedForMode("write_to_file", "collaborate", [], undefined, {
+				path: "components/01-chapter/notes/collaborate-handoff.md",
+				content: "Handoff note",
+			}),
+		).toBe(true)
+	})
+
+	it("blocks writing to knowledge/", () => {
+		expect(() =>
+			isToolAllowedForMode("write_to_file", "collaborate", [], undefined, {
+				path: "knowledge/glossary.md",
+				content: "New entry",
+			}),
+		).toThrow(FileRestrictionError)
+	})
+
+	it("blocks writing to .boo/", () => {
+		expect(() =>
+			isToolAllowedForMode("write_to_file", "collaborate", [], undefined, {
+				path: ".boo/style.md",
+				content: "Style change",
+			}),
+		).toThrow(FileRestrictionError)
+	})
+
+	it("blocks writing to workspace.boo.md", () => {
+		expect(() =>
+			isToolAllowedForMode("write_to_file", "collaborate", [], undefined, {
+				path: "workspace.boo.md",
+				content: "Workspace change",
+			}),
+		).toThrow(FileRestrictionError)
+	})
+
+	it("blocks writing to plan-draft.md (not a collaborate plan file)", () => {
+		expect(() =>
+			isToolAllowedForMode("write_to_file", "collaborate", [], undefined, {
+				path: "components/01-chapter/plans/plan-draft.md",
+				content: "Draft plan",
+			}),
+		).toThrow(FileRestrictionError)
 	})
 })
 
