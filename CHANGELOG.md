@@ -8,6 +8,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## 3.59.1
+
+### Added
+
+- **Collaborate Mode:** New writing mode that merges outlining and drafting into a turn-by-turn conversational loop
+    - Human-driven: agent proposes each move before writing, waits for go-ahead or steering input
+    - Intake interview establishes component scope, session goal, and constraints; branches into fresh/continue/existing-plan workflows
+    - Living beat list (`plan-collaborate-<N>.md`) tracks drafted/completed states with per-beat decision notes for cold-restart continuity
+    - Session-end review surfaces issues noticed, flags new lore for Develop mode, and writes a handoff note to `notes/`
+    - File access scoped to component `main.md`, `plans/plan-collaborate-*.md`, and `notes/` — no writes to `knowledge/` or `.boo/`
+    - Compatible with existing Outline → Collaborate workflow (consumes existing plan files) or standalone Collaborate-only sessions
+
+---
+
 ## 3.58.1
 
 ### Added
